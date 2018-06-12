@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+
+<!-- 这是mybatis generatior 的配置文件,用于mybatis逆向工程 -->
+<generatorConfiguration>
+    <context id="DB2Tables" targetRuntime="MyBatis3">
+
+        <!-- 生成时是否禁止注释的生成,true时会禁止 -->
+        <commentGenerator>
+            <property name="suppressAllComments" value="true" />
+        </commentGenerator>
+
+        <!-- 配置数据库连接 ,因为只会用一次,所以可以直接在下面写出来,不需要读取配置文件-->
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://localhost:3306/schooldeal"
+                        userId="root"
+                        password="123456">
+        </jdbcConnection>
+
+        <javaTypeResolver >
+            <property name="forceBigDecimals" value="false" />
+        </javaTypeResolver>
+
+        <!-- 指定Javabean生成的位置 ,注意targetProject不需要接着写包名-->
+        <javaModelGenerator
+                targetPackage="com.kingguanzhang.pojo.pojo"
+                targetProject=".\src\main\java">
+            <property name="enableSubPackages" value="true" />
+            <property name="trimStrings" value="true" />
+        </javaModelGenerator>
+
+        <!-- 指定sql映射文件生成的位置 -->
+        <sqlMapGenerator
+                targetPackage="mapper.mapper"
+                targetProject=".\src\main\resources">
+            <property name="enableSubPackages" value="true" />
+        </sqlMapGenerator>
+
+        <!-- 指定Dao接口生成的位置 -->
+        <javaClientGenerator type="XMLMAPPER"
+                             targetPackage="com.kingguanzhang.dao.dao"
+                             targetProject=".\src\main\java">
+            <property name="enableSubPackages" value="true" />
+        </javaClientGenerator>
+
+        <!-- 指定每个表的生成策略 -->
+        <!--<table  tableName="tb_area" domainObjectName="Area" >
+        </table>
+
+        <table  tableName="tb_local_auth" domainObjectName="LocalAuth" >
+        </table>
+
+        <table  tableName="tb_person_info" domainObjectName="PersonInfo" >
+        </table>
+
+        <table  tableName="tb_product" domainObjectName="Product" >
+        </table>
+
+        <table  tableName="tb_product_category" domainObjectName="ProductCategory" >
+        </table>
+
+        <table  tableName="tb_product_img" domainObjectName="ProductImg" >
+        </table>
+
+        <table  tableName="tb_shop" domainObjectName="Shop" >
+        </table>
+
+        <table  tableName="tb_role" domainObjectName="Role" >
+        </table>
+
+        <table  tableName="tb_role_localauth" domainObjectName="RoleLocalauth" >
+        </table>-->
+        <table  tableName="tb_local_auth" domainObjectName="LocalAuth" >
+        </table>
+
+        <table  tableName="tb_product" domainObjectName="Product" >
+        </table>
+
+        <table  tableName="tb_shop" domainObjectName="Shop" >
+        </table>
+
+
+    </context>
+</generatorConfiguration>

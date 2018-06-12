@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kingguanzhang.dealsites.dao.RoleLocalauthMapper">
+  <resultMap id="BaseResultMap" type="com.kingguanzhang.dealsites.pojo.RoleLocalauth">
+    <id column="role_localauth_id" jdbcType="INTEGER" property="roleLocalauthId" />
+    <result column="role_id" jdbcType="INTEGER" property="roleId" />
+    <result column="localauth_id" jdbcType="INTEGER" property="localauthId" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    role_localauth_id, role_id, localauth_id
+  </sql>
+  <select id="selectByExample" parameterType="com.kingguanzhang.dealsites.pojo.RoleLocalauthExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from tb_role_localauth
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_role_localauth
+    where role_localauth_id = #{roleLocalauthId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tb_role_localauth
+    where role_localauth_id = #{roleLocalauthId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.kingguanzhang.dealsites.pojo.RoleLocalauthExample">
+    delete from tb_role_localauth
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.kingguanzhang.dealsites.pojo.RoleLocalauth" useGeneratedKeys="true" keyColumn="role_localauth_id" keyProperty="roleLocalauthId">
+    insert into tb_role_localauth (role_localauth_id, role_id, localauth_id
+      )
+    values (#{roleLocalauthId,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER}, #{localauthId,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.kingguanzhang.dealsites.pojo.RoleLocalauth" useGeneratedKeys="true" keyColumn="role_localauth_id" keyProperty="roleLocalauthId">
+    insert into tb_role_localauth
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="roleLocalauthId != null">
+        role_localauth_id,
+      </if>
+      <if test="roleId != null">
+        role_id,
+      </if>
+      <if test="localauthId != null">
+        localauth_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="roleLocalauthId != null">
+        #{roleLocalauthId,jdbcType=INTEGER},
+      </if>
+      <if test="roleId != null">
+        #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="localauthId != null">
+        #{localauthId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.kingguanzhang.dealsites.pojo.RoleLocalauthExample" resultType="java.lang.Long">
+    select count(*) from tb_role_localauth
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update tb_role_localauth
+    <set>
+      <if test="record.roleLocalauthId != null">
+        role_localauth_id = #{record.roleLocalauthId,jdbcType=INTEGER},
+      </if>
+      <if test="record.roleId != null">
+        role_id = #{record.roleId,jdbcType=INTEGER},
+      </if>
+      <if test="record.localauthId != null">
+        localauth_id = #{record.localauthId,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update tb_role_localauth
+    set role_localauth_id = #{record.roleLocalauthId,jdbcType=INTEGER},
+      role_id = #{record.roleId,jdbcType=INTEGER},
+      localauth_id = #{record.localauthId,jdbcType=INTEGER}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.kingguanzhang.dealsites.pojo.RoleLocalauth">
+    update tb_role_localauth
+    <set>
+      <if test="roleId != null">
+        role_id = #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="localauthId != null">
+        localauth_id = #{localauthId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where role_localauth_id = #{roleLocalauthId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.kingguanzhang.dealsites.pojo.RoleLocalauth">
+    update tb_role_localauth
+    set role_id = #{roleId,jdbcType=INTEGER},
+      localauth_id = #{localauthId,jdbcType=INTEGER}
+    where role_localauth_id = #{roleLocalauthId,jdbcType=INTEGER}
+  </update>
+</mapper>

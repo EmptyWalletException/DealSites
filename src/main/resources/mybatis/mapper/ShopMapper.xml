@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kingguanzhang.dealsites.dao.ShopMapper">
+  <resultMap id="BaseResultMap" type="com.kingguanzhang.dealsites.pojo.Shop">
+    <id column="shop_id" jdbcType="INTEGER" property="shopId" />
+    <result column="shop_name" jdbcType="VARCHAR" property="shopName" />
+    <result column="shop_desc" jdbcType="VARCHAR" property="shopDesc" />
+    <result column="shop_addr" jdbcType="VARCHAR" property="shopAddr" />
+    <result column="phone" jdbcType="BIGINT" property="phone" />
+    <result column="shop_img" jdbcType="VARCHAR" property="shopImg" />
+    <result column="priority" jdbcType="INTEGER" property="priority" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="edit_time" jdbcType="TIMESTAMP" property="editTime" />
+    <result column="enable_status" jdbcType="INTEGER" property="enableStatus" />
+    <result column="advice" jdbcType="VARCHAR" property="advice" />
+    <result column="area_id" jdbcType="INTEGER" property="areaId" />
+    <result column="owner_id" jdbcType="INTEGER" property="ownerId" />
+    <!--mybatis的级联查询-->
+    <association property="area" column="area_id" select="com.kingguanzhang.dealsites.dao.AreaMapper.selectByPrimaryKey" javaType="com.kingguanzhang.dealsites.pojo.Area" />
+    <association property="personInfo" column="owner_id" select="com.kingguanzhang.dealsites.dao.PersonInfoMapper.selectByPrimaryKey" javaType="com.kingguanzhang.dealsites.pojo.PersonInfo" />
+
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    shop_id, shop_name, shop_desc, shop_addr, phone, shop_img, priority, create_time, 
+    edit_time, enable_status, advice, area_id, owner_id
+  </sql>
+  <select id="selectByExample" parameterType="com.kingguanzhang.dealsites.pojo.ShopExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from tb_shop
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_shop
+    where shop_id = #{shopId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tb_shop
+    where shop_id = #{shopId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.kingguanzhang.dealsites.pojo.ShopExample">
+    delete from tb_shop
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.kingguanzhang.dealsites.pojo.Shop" useGeneratedKeys="true" keyColumn="shop_id" keyProperty="shopId">
+    insert into tb_shop (shop_id, shop_name, shop_desc, 
+      shop_addr, phone, shop_img, 
+      priority, create_time, edit_time, 
+      enable_status, advice, area_id, 
+      owner_id)
+    values (#{shopId,jdbcType=INTEGER}, #{shopName,jdbcType=VARCHAR}, #{shopDesc,jdbcType=VARCHAR}, 
+      #{shopAddr,jdbcType=VARCHAR}, #{phone,jdbcType=BIGINT}, #{shopImg,jdbcType=VARCHAR}, 
+      #{priority,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{editTime,jdbcType=TIMESTAMP}, 
+      #{enableStatus,jdbcType=INTEGER}, #{advice,jdbcType=VARCHAR}, #{areaId,jdbcType=INTEGER}, 
+      #{ownerId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.kingguanzhang.dealsites.pojo.Shop" useGeneratedKeys="true" keyColumn="shop_id" keyProperty="shopId">
+    insert into tb_shop
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="shopId != null">
+        shop_id,
+      </if>
+      <if test="shopName != null">
+        shop_name,
+      </if>
+      <if test="shopDesc != null">
+        shop_desc,
+      </if>
+      <if test="shopAddr != null">
+        shop_addr,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="shopImg != null">
+        shop_img,
+      </if>
+      <if test="priority != null">
+        priority,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="editTime != null">
+        edit_time,
+      </if>
+      <if test="enableStatus != null">
+        enable_status,
+      </if>
+      <if test="advice != null">
+        advice,
+      </if>
+      <if test="areaId != null">
+        area_id,
+      </if>
+      <if test="ownerId != null">
+        owner_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="shopId != null">
+        #{shopId,jdbcType=INTEGER},
+      </if>
+      <if test="shopName != null">
+        #{shopName,jdbcType=VARCHAR},
+      </if>
+      <if test="shopDesc != null">
+        #{shopDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="shopAddr != null">
+        #{shopAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=BIGINT},
+      </if>
+      <if test="shopImg != null">
+        #{shopImg,jdbcType=VARCHAR},
+      </if>
+      <if test="priority != null">
+        #{priority,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="editTime != null">
+        #{editTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enableStatus != null">
+        #{enableStatus,jdbcType=INTEGER},
+      </if>
+      <if test="advice != null">
+        #{advice,jdbcType=VARCHAR},
+      </if>
+      <if test="areaId != null">
+        #{areaId,jdbcType=INTEGER},
+      </if>
+      <if test="ownerId != null">
+        #{ownerId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.kingguanzhang.dealsites.pojo.ShopExample" resultType="java.lang.Long">
+    select count(*) from tb_shop
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update tb_shop
+    <set>
+      <if test="record.shopId != null">
+        shop_id = #{record.shopId,jdbcType=INTEGER},
+      </if>
+      <if test="record.shopName != null">
+        shop_name = #{record.shopName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.shopDesc != null">
+        shop_desc = #{record.shopDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="record.shopAddr != null">
+        shop_addr = #{record.shopAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="record.phone != null">
+        phone = #{record.phone,jdbcType=BIGINT},
+      </if>
+      <if test="record.shopImg != null">
+        shop_img = #{record.shopImg,jdbcType=VARCHAR},
+      </if>
+      <if test="record.priority != null">
+        priority = #{record.priority,jdbcType=INTEGER},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.editTime != null">
+        edit_time = #{record.editTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.enableStatus != null">
+        enable_status = #{record.enableStatus,jdbcType=INTEGER},
+      </if>
+      <if test="record.advice != null">
+        advice = #{record.advice,jdbcType=VARCHAR},
+      </if>
+      <if test="record.areaId != null">
+        area_id = #{record.areaId,jdbcType=INTEGER},
+      </if>
+      <if test="record.ownerId != null">
+        owner_id = #{record.ownerId,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update tb_shop
+    set shop_id = #{record.shopId,jdbcType=INTEGER},
+      shop_name = #{record.shopName,jdbcType=VARCHAR},
+      shop_desc = #{record.shopDesc,jdbcType=VARCHAR},
+      shop_addr = #{record.shopAddr,jdbcType=VARCHAR},
+      phone = #{record.phone,jdbcType=BIGINT},
+      shop_img = #{record.shopImg,jdbcType=VARCHAR},
+      priority = #{record.priority,jdbcType=INTEGER},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      edit_time = #{record.editTime,jdbcType=TIMESTAMP},
+      enable_status = #{record.enableStatus,jdbcType=INTEGER},
+      advice = #{record.advice,jdbcType=VARCHAR},
+      area_id = #{record.areaId,jdbcType=INTEGER},
+      owner_id = #{record.ownerId,jdbcType=INTEGER}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.kingguanzhang.dealsites.pojo.Shop">
+    update tb_shop
+    <set>
+      <if test="shopName != null">
+        shop_name = #{shopName,jdbcType=VARCHAR},
+      </if>
+      <if test="shopDesc != null">
+        shop_desc = #{shopDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="shopAddr != null">
+        shop_addr = #{shopAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=BIGINT},
+      </if>
+      <if test="shopImg != null">
+        shop_img = #{shopImg,jdbcType=VARCHAR},
+      </if>
+      <if test="priority != null">
+        priority = #{priority,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="editTime != null">
+        edit_time = #{editTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enableStatus != null">
+        enable_status = #{enableStatus,jdbcType=INTEGER},
+      </if>
+      <if test="advice != null">
+        advice = #{advice,jdbcType=VARCHAR},
+      </if>
+      <if test="areaId != null">
+        area_id = #{areaId,jdbcType=INTEGER},
+      </if>
+      <if test="ownerId != null">
+        owner_id = #{ownerId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where shop_id = #{shopId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.kingguanzhang.dealsites.pojo.Shop">
+    update tb_shop
+    set shop_name = #{shopName,jdbcType=VARCHAR},
+      shop_desc = #{shopDesc,jdbcType=VARCHAR},
+      shop_addr = #{shopAddr,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=BIGINT},
+      shop_img = #{shopImg,jdbcType=VARCHAR},
+      priority = #{priority,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      edit_time = #{editTime,jdbcType=TIMESTAMP},
+      enable_status = #{enableStatus,jdbcType=INTEGER},
+      advice = #{advice,jdbcType=VARCHAR},
+      area_id = #{areaId,jdbcType=INTEGER},
+      owner_id = #{ownerId,jdbcType=INTEGER}
+    where shop_id = #{shopId,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    <!-- 一些设置 -->
+    <settings>
+        <!--开启驼峰命名法则,例如数据库表中的列是create_time,对应的实体类中就是createTime-->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <!--使用jdbc的getGeneratedDeys获取数据库自增主键-->
+        <setting name="useGeneratedKeys" value="true"/>
+        <!--使用列标签替换列别名,默认就是true-->
+        <setting name="useColumnLabel" value="true"/>
+        <!--延迟加载-->
+        <setting name="lazyLoadingEnabled" value="false"/>
+        <!--设置为true时对任意延迟属性的调用会使带有延迟加载属性的对象完整加载；设置为false则每种属性将按需加载-->
+        <setting name="aggressiveLazyLoading" value="false"/>
+    </settings>
+
+    <!-- 配置别名,告诉mybatis所有的bean文件在哪里 ,这个配置也可以放在spring.xml里,与Mapper扫描放在一起-->
+    <typeAliases>
+        <package name="com.kingguanzhang.dealsites.pojo"/>
+    </typeAliases>
+
+    <!-- 引入插件 -->
+    <plugins>
+        <!-- com.github.pagehelper为PageHelper类所在包名 -->
+        <!-- 引入分页插件 -->
+        <plugin interceptor="com.github.pagehelper.PageInterceptor">
+            <!-- 使得分页参数合理化,不会出现类似"查询第-1页"的情况 -->
+            <property name="reasonable" value="true"/>
+        </plugin>
+    </plugins>
+</configuration>
