@@ -1,5 +1,9 @@
 使用springBoot搭建的交易平台,将上次做的SSM框架的交易平台项目改造成springBoot框架,并且整合更多的组件;
 
+2018/6/12
+
+1:解决了springboot中tomcat加载本地图片的问题,只需要在继承WebMvcConfigurerAdapter类后重写addResourceHandlers方法即可;
+
 2018/6/11
 
 创建项目,关联GitHub仓库,将所有jsp页面改成了html页面供模板引擎使用,项目已经成功运行,目前需要解决的问题是
