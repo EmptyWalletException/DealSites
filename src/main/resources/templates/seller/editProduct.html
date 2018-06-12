@@ -41,13 +41,12 @@
                         <h3 class="text-center">编辑商品</h3>
                         <div class="needs-validation" id="editProductForm"  novalidate>
                             <div >
-                                <img  class="card-img" src="" alt="商品图片" id="productImg">
+                                <img  class="card-img" src="" alt="商品图片" th:src="${product.imgAddr}" id="productImg">
                             </div>
                             <br/>
-
                             <div class="mb-3">
                                 <label for="productName">商品名字:</label>
-                                <input type="text" class="form-control" id="productName" name="productName"  required>
+                                <input type="text" class="form-control" id="productName" name="productName" th:value="${product.productName}" required>
                                 <div class="invalid-feedback">
                                     请输入一个商品名字.
                                 </div>
@@ -55,7 +54,7 @@
 
                             <div class="mb-3">
                                 <label for="productDesc">商品描述:</label>
-                                <textarea  class="form-control" id="productDesc" name="productDesc" required></textarea>
+                                <textarea  class="form-control" id="productDesc" name="productDesc" th:text="${product.productDesc}" required></textarea>
                                 <div class="invalid-feedback">
                                     请输入商品描述.
                                 </div>
@@ -63,7 +62,7 @@
 
                             <div class="mb-3">
                                 <label for="normalPrice">商品价格:</label>
-                                <input type="text" class="form-control" id="normalPrice" name="normalPrice" >
+                                <input type="text" class="form-control" id="normalPrice" th:value="${product.normalPrice}" name="normalPrice" >
                                 <div class="invalid-feedback">
                                     请输入正确的商品价格.
                                 </div>
@@ -71,12 +70,9 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="productCategorySel">选择商品分类:</label>
-                                    <select class="custom-select d-block w-100" id="productCategorySel" name="productCategorySel"required>
-                                        <option value="">选择商品分类</option>
-                                        <option>商品分类1</option>
-                                        <option>商品分类2</option>
-                                        <option>商品分类3</option>
-                                        <option>商品分类4</option>
+                                    <select class="custom-select d-block w-100" id="productCategorySel"  name="productCategorySel"required>
+                                        <option th:each="productCategory:${productCategoryList}" th:value="${productCategory.productCategoryId}" th:text="${productCategory.productCategoryName}" th:selected="${productCategory != null}?${product.productCategory.productCategoryId == productCategory.productCategoryId}">选择商品分类</option>
+
                                     </select>
                                     <div class="invalid-feedback">
                                         请选择商品分类;

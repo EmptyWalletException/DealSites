@@ -78,8 +78,8 @@ public class RegisterUserController {
         String localAuthStr = RequestUtil.parserString(request,"localAuth");
         String personInfoStr = RequestUtil.parserString(request,"personInfo");
 
-        System.out.println(localAuthStr);
-        System.out.println(personInfoStr);
+        System.out.println("注册"+localAuthStr);
+        System.out.println("注册"+personInfoStr);
 
         try {
             localAuth = objectMapper.readValue(localAuthStr,LocalAuth.class);

@@ -17,7 +17,7 @@ public class LoginController {
     ShopService shopService;
 
 
-    @RequestMapping(value = "/loginform" ,method = RequestMethod.POST)
+    @RequestMapping(value = "/login" ,method = RequestMethod.POST)
     public String  login(@RequestParam("username") String username, HttpServletRequest request){
 
         //使用security无法进入此方法,需要深入了解security;

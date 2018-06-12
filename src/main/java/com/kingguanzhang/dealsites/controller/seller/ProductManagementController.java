@@ -5,11 +5,13 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.kingguanzhang.dealsites.dto.Msg;
 import com.kingguanzhang.dealsites.pojo.Product;
+import com.kingguanzhang.dealsites.pojo.ProductCategory;
 import com.kingguanzhang.dealsites.service.ProductCategoryService;
 import com.kingguanzhang.dealsites.service.ProductService;
 import com.kingguanzhang.dealsites.util.RequestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -30,10 +32,13 @@ public class ProductManagementController {
     @Autowired
     private ProductCategoryService productCategoryService;
 
-    @RequestMapping("/showEditProduct/{productId}")
-    public String showEditProduct(@PathVariable("productId") Integer productId, HttpServletRequest request) {
-        request.getSession().setAttribute("productId", productId);
-        return "seller/editProduct";
+    @RequestMapping("/seller/showEditProduct/{productId}")
+    public String showEditProduct(@PathVariable("productId") Integer productId, Model model) {
+        Product product = productService.getProduct(productId);
+        model.addAttribute("product",product);
+        List<ProductCategory> productCategoryList = productCategoryService.getCategory();
+        model.addAttribute("productCategoryList",productCategoryList);
+        return "/seller/editProduct";
     }
 
 
@@ -309,7 +314,7 @@ public class ProductManagementController {
                 //使用文件.getOriginalFilename可以获取带后缀.jpg的全名;或者文件.getItem.getName也可以获取带后缀的文件名;否则只能取到不带后缀的文件名;
                 productService.updateProductWithImg(product, productImg.getInputStream(), productImg.getOriginalFilename());
             } catch (IOException e) {
-                System.out.print(e.getMessage());
+                System.out.print( "异常信息"+e.getMessage());
                 return Msg.fail().setMsg("更新商品信息失败");
             }
         }
@@ -363,7 +368,7 @@ public class ProductManagementController {
                 //使用文件.getOriginalFilename可以获取带后缀.jpg的全名;或者文件.getItem.getName也可以获取带后缀的文件名;否则只能取到不带后缀的文件名;
                 productService.addProduct(product, productImg.getInputStream(), productImg.getOriginalFilename());
             } catch (IOException e) {
-                System.out.print(e.getMessage());
+                System.out.print("异常信息"+e.getMessage());
                 return Msg.fail().setMsg("图片保存出错了");
             }
             //返回新增商品的最终结果;

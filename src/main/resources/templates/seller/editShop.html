@@ -35,74 +35,72 @@
 
             <div class="row col-lg-6 offset-lg-3">
                 <div class="col-lg-12 ">
-                        <h3 class="text-center">编辑店铺</h3>
-                        <div class="needs-validation" id="registerShopForm"  novalidate>
-                            <div >
-                                <img  class="card-img" src="" alt="店铺主页图片" id="shopImg">
-                            </div>
-                            <br/>
+                    <h3 class="text-center">编辑店铺</h3>
 
-                            <div class="mb-3">
-                                <label for="shopName">招牌名字:</label>
-                                <input type="text" class="form-control" id="shopName" name="shopName"  required>
+                    <div class="needs-validation" id="registerShopForm"  novalidate>
+                        <div >
+                            <img  class="card-img" src="" alt="店铺主页图片" th:src="${shop.shopImg}" id="shopImg">
+                        </div>
+                        <br/>
+                        <div class="mb-3">
+                            <label for="shopName">招牌名字:</label>
+                            <input type="text" class="form-control" id="shopName" name="shopName" th:value="${shop.shopName}" required>
+                            <div class="invalid-feedback">
+                                请输入一个可使用的店铺名字.
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="shopDesc">店铺描述:</label>
+                            <textarea  class="form-control" id="shopDesc" name="shopDesc" th:text="${shop.shopDesc}" required></textarea>
+                            <div class="invalid-feedback">
+                                请输入店铺描述.
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="phone">手机号码:</label>
+                            <input type="text" class="form-control" id="phone" name="phone" th:value="${shop.phone}">
+                            <div class="invalid-feedback">
+                                请输入正确的手机号码.
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="shopAddr">店铺地址:</label>
+                            <input type="text" class="form-control" id="shopAddr" name="shopAddr" th:value="${shop.shopAddr}" required>
+                            <div class="invalid-feedback">
+                                请输入您的店铺地址.
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="areaSel">选择店铺区域:</label>
+                                <select class="custom-select d-block w-100" id="areaSel" name="areaId"required>
+                                    <option th:each="area:${areaList}" th:value="${area.areaId}" th:text="${area.areaName}" th:selected="${shop.area.areaId == area.areaId}">选择店铺区域</option>
+
+                                </select>
                                 <div class="invalid-feedback">
-                                    请输入一个可使用的店铺名字.
+                                    请选择店铺区域.
                                 </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="shopDesc">店铺描述:</label>
-                                <textarea  class="form-control" id="shopDesc" name="shopDesc" required></textarea>
-                                <div class="invalid-feedback">
-                                    请输入店铺描述.
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="phone">手机号码:</label>
-                                <input type="text" class="form-control" id="phone" name="phone" >
-                                <div class="invalid-feedback">
-                                    请输入正确的手机号码.
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="shopAddr">店铺地址:</label>
-                                <input type="text" class="form-control" id="shopAddr" name="shopAddr"  required>
-                                <div class="invalid-feedback">
-                                    请输入您的店铺地址.
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="areaSel">选择店铺区域:</label>
-                                    <select class="custom-select d-block w-100" id="areaSel" name="areaId"required>
-                                        <option value="">选择店铺区域</option>
-                                        <option>华东</option>
-                                        <option>华西</option>
-                                        <option>华南</option>
-                                        <option>华北</option>
-                                    </select>
-                                    <div class="invalid-feedback">
-                                        请选择店铺区域.
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <hr class="mb-4">
-                            <div class="form-group">
-                                <label for="inputFile">上传一张店铺主页图片:</label>
-                                <input type="file" id="inputFile" >
-                                <p class="help-block">如果您不需要重新更换店铺图片,请跳过上传图片的步骤.</p>
-                            </div>
-                            <hr class="mb-4">
 
                         </div>
-                            <button class="btn btn-primary btn-lg btn-block "  id="submit_EditShop">提交更新</button>
+
+                        <hr class="mb-4">
+                        <div class="form-group">
+                            <label for="inputFile">上传一张店铺主页图片:</label>
+                            <input type="file" id="inputFile" >
+                            <p class="help-block">如果您不需要重新更换店铺图片,请跳过上传图片的步骤.</p>
+                        </div>
+                        <hr class="mb-4">
+
                     </div>
+                    <button class="btn btn-primary btn-lg btn-block "  id="submit_EditShop">提交更新</button>
                 </div>
+            </div>
 
 
                 <!-- FOOTER -->

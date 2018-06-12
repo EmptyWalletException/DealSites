@@ -8,6 +8,8 @@
 
 3:security5强制使用一个密码编译格式,否则报错There is no PasswordEncoder mapped for the id “null”;
 
+4:security5版本很多规定非常耽误进度,例如密码强制使用一种加密方式,配置类里规定不能写ROLE_而数据库表中角色名又必须带ROLE,这种规定非常容易出问题,下次如果再遇到security的问题会换回4版本,目前security的配置工作已经结束了;
+
 2018/6/11
 
 创建项目,关联GitHub仓库,将所有jsp页面改成了html页面供模板引擎使用,项目已经成功运行,目前需要解决的问题是

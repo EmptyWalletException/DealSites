@@ -3,51 +3,6 @@
 *
 * */
 
-/* 抽取出来的获取商品分类的方法 */
-function getProductCategory(product){
-    /* alert("进入js代码");*/
-    $.ajax({
-        url:"/ajax/productCategory",
-        type:"get",
-        success:function(result){
-            /*    alert("进入ajax代码");*/
-            var productCategorySel =$("#productCategorySel");
-            var categoryArray = result.extend.productCategoryList;
-            productCategorySel.empty();
-            $.each(categoryArray,function (index,item) {
-                var  op4SC =$("<option></option>").attr("value",item.productCategoryId).append(item.productCategoryName)
-               if(product.productCategoryId == item.productCategoryId){
-                   op4SC.attr("selected","selected");
-               }
-                productCategorySel.append(op4SC);
-            });
-        }
-    });
-};
-
-/*获取商品信息并回显*/
-function getProduct(){
-    /*这里需要实现取到商品的id值的代码*/
-    //TO-DO
-    $.ajax({
-        url:"/getProduct",
-        type:"get",
-        success:function(result){
-
-            /* 这里要检查一下后端是否返回了错误报告信息 */
-            if(100 == result.code){
-                var product = result.extend.product;
-                $("#productImg").attr("src",product.imgAddr);
-                $("#productName").val(product.productName);
-                $("#productDesc").val(product.productDesc);
-                $("#normalPrice").val(product.normalPrice);
-                getProductCategory(product);
-            }else{
-                alert(result.msg);
-            }
-        }
-    });
-}
 
 $("#submit_EditProduct").click(function(){
     /* 检查输入框是否符合正则表达式 */
@@ -82,7 +37,5 @@ $("#submit_EditProduct").click(function(){
 
 });
 
-$(function () {
-    getProduct();
-})
+
 

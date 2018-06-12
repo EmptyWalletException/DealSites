@@ -69,7 +69,7 @@ function build_product_table(result){
                                 "<p class=\"card-text\">" +product.productDesc + "</p>" +
                                 "<div class=\"\">" +
                                     "<div class=\"btn-group\">" +
-                                        "<a type=\"button\" class=\"btn btn-sm btn-outline-secondary edit btn_edit\"  href=\"/showEditProduct/"+product.productId+"\">编辑</a>" +
+                                        "<a type=\"button\" class=\"btn btn-sm btn-outline-secondary edit btn_edit\"  href=\"/seller/showEditProduct/"+product.productId+"\">编辑</a>" +
                                         "<button type=\"button\" class=\"btn btn-sm btn-outline-secondary btn_switchStatus\"  productId='"+product.productId+"'>"+(product.enableStatus == 0?'下架':'上架')+"</button>" +
                                         "<button type=\"button\" class=\"btn btn-sm btn-outline-secondary btn_removeProduct\"  productId='"+product.productId+"'>删除</button>" +
                                     "</div>" +

@@ -139,7 +139,7 @@ public class ShopManagementController {
                //使用文件.getOriginalFilename可以获取带后缀.jpg的全名;或者文件.getItem.getName也可以获取带后缀的文件名;否则只能取到不带后缀的文件名;
                 shopService.addShop(shop, shopImg.getInputStream(), shopImg.getOriginalFilename());
             } catch (IOException e) {
-                System.out.print(e.getMessage());
+                System.out.print("异常信息"+e.getMessage());
                 return Msg.fail().setMsg("图片保存出错了");
             }
             //返回注册店铺的最终结果;

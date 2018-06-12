@@ -1,13 +1,18 @@
 package com.kingguanzhang.dealsites.controller.common;
 
 
+import com.kingguanzhang.dealsites.controller.seller.AreaController;
+import com.kingguanzhang.dealsites.pojo.Area;
 import com.kingguanzhang.dealsites.pojo.LocalAuth;
 import com.kingguanzhang.dealsites.pojo.PersonInfo;
 import com.kingguanzhang.dealsites.pojo.Shop;
+import com.kingguanzhang.dealsites.service.AreaService;
 import com.kingguanzhang.dealsites.service.LocalAuthService;
 import com.kingguanzhang.dealsites.service.ShopService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,9 +27,12 @@ public class JumpToJspPage {
     private LocalAuthService localAuthService;
     @Autowired
     private ShopService shopService;
+    @Autowired
+    private AreaService areaService;
 
     @RequestMapping("/index")
     public String showIndex(){
+
         return "common/index";
     }
 
@@ -64,7 +72,12 @@ public class JumpToJspPage {
     }
 
     @RequestMapping("/editShop")
-    public String showEditShop(){
+    public String showEditShop(HttpServletRequest request, Model model){
+        Integer shopId = (Integer) request.getSession().getAttribute("shopId");
+        Shop shop = shopService.getShop(shopId);
+        List<Area> areaList = areaService.getAreas();
+        model.addAttribute("shop",shop);
+        model.addAttribute("areaList",areaList);
         return "seller/editShop";
     }
 
@@ -90,15 +103,18 @@ public class JumpToJspPage {
      */
     @RequestMapping("/shopManagement")
     public String showShopManagement( HttpServletRequest request){
-        //在登录时就需要在session中写入相关信息,这里再取出来
-        String username = (String) request.getSession().getAttribute("username");
-        //虽然返回的是一个列表,但其实只会查询到一个值;
-
-        //TO-DO
-        username = "admin";//因为这里调试时发现session中没有取到值,需要后期去自定义security登录成功后的控制层实现写入session;
+        //使用security在session中取出用户信息;
+        SecurityContextImpl securityContextImpl = (SecurityContextImpl) request.getSession().getAttribute("SPRING_SECURITY_CONTEXT");
+        String username = securityContextImpl.getAuthentication().getName();
+        if (null != username){
+            System.out.println("shopManagement:"+username);
+        }else {
+            System.out.println("没有用户名");
+        }
         //通过用户账号名得到用户
         List<LocalAuth> localAuthList= localAuthService.getLocalAuthByLoginUsername(username);
         PersonInfo personInfo = localAuthList.get(0).getPersonInfo();
+        //System.out.println(personInfo.getUserId());
         //将用户信息写入session
         request.getSession().setAttribute("user",personInfo);
         request.getSession().setAttribute("userName",personInfo.getName());

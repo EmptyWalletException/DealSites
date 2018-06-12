@@ -51,7 +51,7 @@ function build_product_table(result){
                         "<td>"+product.productCategory.productCategoryName+"</td>"+
                         "<td>"+product.productDesc+"</td>"+
                         "<td>"+
-                        " <a  class='btn btn-sm btn-outline-secondary ' href=\"/showEditProduct/"+product.productId+"\""+"\">编辑</a>"+
+                        " <a  class='btn btn-sm btn-outline-secondary ' href=\"/seller/showEditProduct/"+product.productId+"\""+"\">编辑</a>"+
                         "<button type='button' class='btn btn-sm btn-outline-secondary btn_switchStatus'  productId='"+product.productId+"'>"+(product.enableStatus == 0?'下架':'上架')+"</button>" +
                         "<button type='button' class='btn btn-sm btn-outline-secondary btn_removeProduct'  productId='"+product.productId+"'>删除</button>" +
                         "</td>"+
