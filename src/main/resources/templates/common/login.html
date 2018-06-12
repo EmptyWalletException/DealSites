@@ -1,5 +1,10 @@
+
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html  xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:th="http://www.thymeleaf.org"
+       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+
 
 <head>
     <meta charset="utf-8">
@@ -30,12 +35,12 @@
 
 
 <body class="text-center" >
-<form class="form-signin" id="form-signin" action="/loginform" method="POST">
+<form class="form-signin" id="form-signin" action="/login" method="POST">
     <img class="mb-4" src="" alt="" width="72" height="72">
     <h1 class="h3 mb-3 font-weight-normal">请先登录再执行操作</h1>
-    <label  style="color: red" id="msg">${sessionScope.SPRING_SECURITY_LAST_EXCEPTION.message }</label>
+    <label  style="color: red" id="msg" th:if="${param.error}" th:text="${session.SPRING_SECURITY_LAST_EXCEPTION.message}"></label>
     <label for="inputUserName" class="sr-only">账号</label>
-    <input type="text" id="inputUserName" class="form-control" name="username" placeholder="请出入账号" required autofocus>
+    <input type="text" id="inputUserName" class="form-control" name="username" placeholder="请输入账号" required autofocus>
     <label for="inputPassword" class="sr-only">密码</label>
     <input type="password" id="inputPassword" class="form-control" name="password" placeholder="请输入密码" required>
     <div class="checkbox mb-3">

@@ -4,6 +4,10 @@
 
 1:解决了springboot中tomcat加载本地图片的问题,只需要在继承WebMvcConfigurerAdapter类后重写addResourceHandlers方法即可;
 
+2:整合了security5组件,并回显登录错误信息,同时将错误信息配置成了中文提示,发现的问题是如果不禁用csrf那么所有的post请求都会失效;
+
+3:security5强制使用一个密码编译格式,否则报错There is no PasswordEncoder mapped for the id “null”;
+
 2018/6/11
 
 创建项目,关联GitHub仓库,将所有jsp页面改成了html页面供模板引擎使用,项目已经成功运行,目前需要解决的问题是
