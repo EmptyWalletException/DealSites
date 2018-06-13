@@ -18,6 +18,9 @@
                 <a class="nav-link" href="/index">网站首页 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" href="/buyer/cart">买家板块 </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="/shopManagement">卖家板块 </a>
             </li>
             <li class="nav-item">
@@ -33,11 +36,11 @@
         <!--登录及个人信息区域,在js里通过session判断来切换显示信息-->
         <ul class="float-right navbar-nav">
             <li  class="nav-item">
-                <div class="row">
+                <div class="row" id="user">
                     <img id="userHeadImg" class="rounded-circle figure-img" src="\images\testhead.jpg" alt="头像"  sec:authorize="isAuthenticated()"  />
                     <a id="login" href="/login" class="nav-link" th:if="${null == session.user }" sec:authorize="isAnonymous()" >登录</a>
                     <a id="register" href="/register/registerUser" class="nav-link"  sec:authorize="isAnonymous()" >注册</a>
-                    <a id="center" href="/personInfo" class="nav-link" sec:authorize="isAuthenticated()" sec:authentication="name" ></a>
+                    <a id="userCenter" href="/personInfo" class="nav-link" sec:authorize="isAuthenticated()" sec:authentication="name" ></a>
                     <a id="exit"href="/logout" class="nav-link" sec:authorize="isAuthenticated()" >安全退出</a>
                 </div>
             </li>

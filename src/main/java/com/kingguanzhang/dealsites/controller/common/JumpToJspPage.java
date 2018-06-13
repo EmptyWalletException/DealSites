@@ -31,8 +31,23 @@ public class JumpToJspPage {
     private AreaService areaService;
 
     @RequestMapping("/index")
-    public String showIndex(){
-
+    public String showIndex(HttpServletRequest request){
+        //使用security在session中取出用户信息;
+        SecurityContextImpl securityContextImpl = (SecurityContextImpl) request.getSession().getAttribute("SPRING_SECURITY_CONTEXT");
+        if (null != securityContextImpl) {
+            String username = securityContextImpl.getAuthentication().getName();
+            if (null != username) {
+                System.out.println("shopManagement:" + username);
+            } else {
+                System.out.println("没有用户名");
+            }
+            //通过用户账号名得到用户
+            List<LocalAuth> localAuthList = localAuthService.getLocalAuthByLoginUsername(username);
+            PersonInfo personInfo = localAuthList.get(0).getPersonInfo();
+            //System.out.println(personInfo.getUserId());
+            //将用户信息写入session
+            request.getSession().setAttribute("personInfo", personInfo);
+        }
         return "common/index";
     }
 
@@ -103,22 +118,8 @@ public class JumpToJspPage {
      */
     @RequestMapping("/shopManagement")
     public String showShopManagement( HttpServletRequest request){
-        //使用security在session中取出用户信息;
-        SecurityContextImpl securityContextImpl = (SecurityContextImpl) request.getSession().getAttribute("SPRING_SECURITY_CONTEXT");
-        String username = securityContextImpl.getAuthentication().getName();
-        if (null != username){
-            System.out.println("shopManagement:"+username);
-        }else {
-            System.out.println("没有用户名");
-        }
-        //通过用户账号名得到用户
-        List<LocalAuth> localAuthList= localAuthService.getLocalAuthByLoginUsername(username);
-        PersonInfo personInfo = localAuthList.get(0).getPersonInfo();
-        //System.out.println(personInfo.getUserId());
-        //将用户信息写入session
-        request.getSession().setAttribute("user",personInfo);
-        request.getSession().setAttribute("userName",personInfo.getName());
-        request.getSession().setAttribute("headImg",personInfo.getProfileImg());
+       //在首页时就已经在session中写入了personInfo;
+        PersonInfo personInfo = (PersonInfo) request.getSession().getAttribute("personInfo");
         //通过用户Id得到店铺;
         Shop shop = shopService.getShopByUserId(personInfo.getUserId());
         request.getSession().setAttribute("shopId",shop.getShopId());

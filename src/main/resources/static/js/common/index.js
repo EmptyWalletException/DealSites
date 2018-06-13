@@ -102,7 +102,7 @@ function build_product_table(result){
             "<p class='card-text'>" +product.productDesc + "</p>" +
             "<div class=''>" +
             "<div class='btn-group'>" +
-            "<button type='button' class='btn btn-sm btn-outline-secondary btn_collect'  productId='"+product.productId+"'>收藏</button>" +
+            "<button type='button' class='btn btn-sm btn-outline-secondary btn_collect'  productId='"+product.productId+"'><span class='glyphicon glyphicon-heart-empty'></span> 收藏</button>" +
             "<button type='button' class='btn btn-sm btn-outline-secondary btn_addToCart'  productId='"+product.productId+"'>加入购物车</button>" +
             "</div>" +
             "</div>" +
@@ -111,6 +111,23 @@ function build_product_table(result){
         );
     })
 }
+
+//将单个商品添加进购物车
+$("#shopListRow").on('click','.btn_addToCart',function () {
+    var userCenter =$("#userCenter").text();
+    if("" == userCenter){
+        window.location.href="/login";
+    }
+    var productId = $(this).attr("productId");
+        $.ajax({
+            url:"/buyer/ajax/addProductToCart",
+            type:'POST',
+            data:{'productId':productId},
+            success:function (result) {
+                alert(result.msg);
+            }
+        });
+})
 
 /*分页功能部分*/
 /*  当前第${pageInfo.pageNum }/${pageInfo.pages }页,当前页记录数:${pageInfo.size }条;总记录数:${pageInfo.total }条; */

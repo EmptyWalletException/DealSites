@@ -26,23 +26,23 @@
 
         <!-- 指定Javabean生成的位置 ,注意targetProject不需要接着写包名-->
         <javaModelGenerator
-                targetPackage="com.kingguanzhang.pojo.pojo"
-                targetProject=".\src\main\java">
+                targetPackage="com.kingguanzhang.dealsites.pojo"
+                targetProject=".\src\test\java">
             <property name="enableSubPackages" value="true" />
             <property name="trimStrings" value="true" />
         </javaModelGenerator>
 
         <!-- 指定sql映射文件生成的位置 -->
         <sqlMapGenerator
-                targetPackage="mapper.mapper"
-                targetProject=".\src\main\resources">
+                targetPackage="com.kingguanzhang.dealsites.mapper"
+                targetProject=".\src\test\java">
             <property name="enableSubPackages" value="true" />
         </sqlMapGenerator>
 
         <!-- 指定Dao接口生成的位置 -->
         <javaClientGenerator type="XMLMAPPER"
-                             targetPackage="com.kingguanzhang.dao.dao"
-                             targetProject=".\src\main\java">
+                             targetPackage="com.kingguanzhang.dealsites.dao"
+                             targetProject=".\src\test\java">
             <property name="enableSubPackages" value="true" />
         </javaClientGenerator>
 
@@ -71,17 +71,16 @@
         <table  tableName="tb_role" domainObjectName="Role" >
         </table>
 
+        <table  tableName="tb_cart" domainObjectName="Cart" >
+        </table>
+
         <table  tableName="tb_role_localauth" domainObjectName="RoleLocalauth" >
         </table>-->
-        <table  tableName="tb_local_auth" domainObjectName="LocalAuth" >
-        </table>
 
-        <table  tableName="tb_product" domainObjectName="Product" >
-        </table>
 
-        <table  tableName="tb_shop" domainObjectName="Shop" >
-        </table>
 
+        <table  tableName="tb_cart" domainObjectName="Cart" >
+        </table>
 
     </context>
 </generatorConfiguration>
