@@ -41,54 +41,119 @@ function to_page(url,pn){
 function build_product_table(result){
 
                 var cartList = result.extend.pageInfo.list;
+
+                var flag=0;//用于生成收藏按钮时的判断,注意作用域,并且在每个商品遍历完后要重置成0;
+                if(null != result.extend.favoriteProductList){
+                    var favoriteProductList = result.extend.favoriteProductList;
+                }
+
                  $.each(cartList,function (index,cart) {
                     var product = cart.product;
+                     if(null != favoriteProductList){
+                         $.each(favoriteProductList,function (index,favoriteProduct) {
+                             if (product.productId == favoriteProduct.productId){
+                                 flag = 1;
+                             }
+                         })
+                     }
                     var createTime = new Date(product.createTime);
                     var editTime = new Date(product.editTime);
-                    $("#shopListRow").append(
-                        "<div class=\"col-lg-3 col-md-6 col-sm-6\">" +
+
+                    if (0 == flag){
+                        $("#shopListRow").append(
+                            "<div class=\"col-lg-3 col-md-6 col-sm-6\">" +
                             "<div class=\"card mb-4 box-shadow\">" +
-                                "<img class=\"card-img-top\" src=\"../" +product.imgAddr +"\" alt=\"商品图片\">" +
+                            "<img class=\"card-img-top\" src=\"../" +product.imgAddr +"\" alt=\"商品图片\">" +
                             "<div class=\"card-body\">" +
 
-                                "<h1>" +product.productName + "</h1>" +
-                                "<div>" +
-                                    "<span>$ " +product.normalPrice + "</span>"+
-                                "</div>" +
-                                "<div class='status'>" +
-                                    "<a class=\"text-muted\" href=/shopDetails/'"+ product.shop.shopId+"'>店铺 : "+ product.shop.shopName +"</a>" +
-                                "</div>" +
-                                "<div>" +
-                                    "<small class=\"text-muted\">商品创建时间 : " +createTime.toLocaleDateString() +"</small>" +
-                                "</div>" +
-                                "<div>" +
-                                    "<small class=\"text-muted\">最后编辑时间 : " +editTime.toLocaleDateString()+ "</small>" +
-                                "</div>" +
-                                "<div>" +
-                                    "<small class=\"text-muted\">商品分类 : "+product.productCategory.productCategoryName+ "</small>" +
-                                "</div>" +
-                                "<p class=\"card-text\">" +product.productDesc + "</p>" +
+                            "<h1>" +product.productName + "</h1>" +
+                            "<div>" +
+                            "<span>$ " +product.normalPrice + "</span>"+
+                            "</div>" +
+                            "<div class='status'>" +
+                            "<a class=\"text-muted\" href='/common/shopDetails/"+ product.shop.shopId+"'>店铺 : "+ product.shop.shopName +"</a>" +
+                            "</div>" +
+                            "<div>" +
+                            "<small class=\"text-muted\">商品创建时间 : " +createTime.toLocaleDateString() +"</small>" +
+                            "</div>" +
+                            "<div>" +
+                            "<small class=\"text-muted\">最后编辑时间 : " +editTime.toLocaleDateString()+ "</small>" +
+                            "</div>" +
+                            "<div>" +
+                            "<small class=\"text-muted\">商品分类 : "+product.productCategory.productCategoryName+ "</small>" +
+                            "</div>" +
+                            "<p class=\"card-text\">" +product.productDesc + "</p>" +
 
-                                "<div class=\"\">" +
-                                    "<div class=\"btn-group\">" +
-                                        "<button type='button' class='btn btn-sm btn-outline-secondary btn_collect'  productId='"+product.productId+"'><span class='glyphicon glyphicon-heart-empty'></span> 收藏</button>" +
-                                        "<button type='button' class='btn btn-sm btn-outline-secondary btn_removeProduct'  productId='"+product.productId+"'>删除</button>" +
-                                    "</div>" +
-                                    "<br/>"+
-                                    "<div class=\"btn-group\">" +
-                                    "<button type='button' class='btn btn-sm btn-outline-secondary btn_minus'  productId='"+product.productId+"'> - </button>" +
-                                    "<button id='productCount' class='btn btn-sm btn-outline-secondary' disabled>" +cart.productCount+ "</button>"+
-                                    "<button type='button' class='btn btn-sm btn-outline-secondary btn_add ' productId='"+product.productId+"'> + </button>" +
-                                    "</div>" +
-                                    "<span class='float-right '>"+
-                                        "<input type='checkbox' class='check_one' productId='"+product.productId+"' />选中"+
-                                    "</span>"+
-                                "</div>" +
+                            "<div class=\"\">" +
+                            "<div class=\"btn-group\">" +
+                            "<button type='button' class='btn btn-sm btn-outline-secondary btn_collectProduct'  productId='"+product.productId+"'><span class='glyphicon glyphicon-heart-empty'></span> 收藏</button>" +
+                            "<button type='button' class='btn btn-sm btn-outline-secondary btn_removeProduct'  productId='"+product.productId+"'>删除</button>" +
+                            "</div>" +
+                            "<br/>"+
+                            "<div class=\"btn-group\">" +
+                            "<button type='button' class='btn btn-sm btn-outline-secondary btn_minus'  productId='"+product.productId+"'> - </button>" +
+                            "<button id='productCount' class='btn btn-sm btn-outline-secondary' disabled>" +cart.productCount+ "</button>"+
+                            "<button type='button' class='btn btn-sm btn-outline-secondary btn_add ' productId='"+product.productId+"'> + </button>" +
+                            "</div>" +
+                            "<span class='float-right '>"+
+                            "<input type='checkbox' class='check_one' productId='"+product.productId+"' />选中"+
+                            "</span>"+
+                            "</div>" +
                             "</div>"+
-                        "</div>"
-                    );
+                            "</div>"
+                        );
+                    }else {
+                        $("#shopListRow").append(
+                            "<div class=\"col-lg-3 col-md-6 col-sm-6\">" +
+                            "<div class=\"card mb-4 box-shadow\">" +
+                            "<img class=\"card-img-top\" src=\"../" +product.imgAddr +"\" alt=\"商品图片\">" +
+                            "<div class=\"card-body\">" +
+
+                            "<h1>" +product.productName + "</h1>" +
+                            "<div>" +
+                            "<span>$ " +product.normalPrice + "</span>"+
+                            "</div>" +
+                            "<div class='status'>" +
+                            "<a class=\"text-muted\" href='/common/shopDetails/"+ product.shop.shopId+"'>店铺 : "+ product.shop.shopName +"</a>" +
+                            "</div>" +
+                            "<div>" +
+                            "<small class=\"text-muted\">商品创建时间 : " +createTime.toLocaleDateString() +"</small>" +
+                            "</div>" +
+                            "<div>" +
+                            "<small class=\"text-muted\">最后编辑时间 : " +editTime.toLocaleDateString()+ "</small>" +
+                            "</div>" +
+                            "<div>" +
+                            "<small class=\"text-muted\">商品分类 : "+product.productCategory.productCategoryName+ "</small>" +
+                            "</div>" +
+                            "<p class=\"card-text\">" +product.productDesc + "</p>" +
+
+                            "<div class=\"\">" +
+                            "<div class=\"btn-group\">" +
+                            "<button type='button' class='btn btn-sm btn-outline-secondary btn_cancelCollectProduct'  productId='"+product.productId+"'><span class='glyphicon glyphicon-heart'></span> 取消收藏</button>" +
+                            "<button type='button' class='btn btn-sm btn-outline-secondary btn_removeProduct'  productId='"+product.productId+"'>删除</button>" +
+                            "</div>" +
+                            "<br/>"+
+                            "<div class=\"btn-group\">" +
+                            "<button type='button' class='btn btn-sm btn-outline-secondary btn_minus'  productId='"+product.productId+"'> - </button>" +
+                            "<button id='productCount' class='btn btn-sm btn-outline-secondary' disabled>" +cart.productCount+ "</button>"+
+                            "<button type='button' class='btn btn-sm btn-outline-secondary btn_add ' productId='"+product.productId+"'> + </button>" +
+                            "</div>" +
+                            "<span class='float-right '>"+
+                            "<input type='checkbox' class='check_one' productId='"+product.productId+"' />选中"+
+                            "</span>"+
+                            "</div>" +
+                            "</div>"+
+                            "</div>"
+                        );
+                    }
+
+
+
+                     flag =0;
+
                 })
                 changeAllCheckedButton();
+
 }
 
 
@@ -155,6 +220,59 @@ $("#shopListRow").on('click','.btn_minus',function () {
             }
         });
 })
+
+//收藏商品
+$("#shopListRow").on('click','.btn_collectProduct',function () {
+    var userCenter =$("#userCenter").text();
+    if("" == userCenter){
+        window.location.href="/login";
+    }
+    var thisBtn = $(this);
+    var productId = thisBtn.attr("productId");
+    $.ajax({
+        url:"/buyer/ajax/addFavoriteProduct",
+        type:'POST',
+        data:{'productId':productId},
+        success:function (result) {
+            //判断当收藏成功时切换取消收藏按钮
+            if (100 == result.code) {
+                //这里必须在ajax的回掉函数外面就用变量thisBtn代替$(this),否则实现不了功能;
+                thisBtn.removeClass("btn_collectProduct").addClass("btn_cancelCollectProduct");
+                thisBtn.empty();
+                thisBtn.append("<span class='glyphicon glyphicon-heart'></span>");
+                thisBtn.append(" 取消收藏")
+            }
+            alert(result.msg);
+        }
+    });
+})
+
+//取消收藏商品
+$("#shopListRow").on('click','.btn_cancelCollectProduct',function () {
+    var userCenter =$("#userCenter").text();
+    if("" == userCenter){
+        window.location.href="/login";
+    }
+    var thisBtn = $(this);
+    var productId = thisBtn.attr("productId");
+    $.ajax({
+        url:"/buyer/ajax/removeFavoriteProduct",
+        type:'POST',
+        data:{'productId':productId},
+        success:function (result) {
+            //判断当收藏成功时切换取消收藏按钮
+            if (100 == result.code) {
+                //这里必须在ajax的回掉函数外面就用变量thisBtn代替$(this),否则实现不了功能;
+                thisBtn.removeClass("btn_cancelCollectProduct").addClass("btn_collectProduct");
+                thisBtn.empty();
+                thisBtn.append("<span class='glyphicon glyphicon-heart-empty'></span>");
+                thisBtn.append(" 收藏")
+            }
+            alert(result.msg);
+        }
+    });
+})
+
 
 
 /*分页功能部分*/

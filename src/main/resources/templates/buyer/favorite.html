@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="">
+
+    <title>购物车</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/css/common/bootstrap-4.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/css/common/dashboard.css" rel="stylesheet">
+<!--    <link href="/css/carousel.css" rel="stylesheet">-->
+</head>
+
+<body>
+<div th:replace="~{common/nav :: topbar}"></div>
+
+<div class="container-fluid">
+    <div class="row">
+
+
+        <div th:replace="~{buyer/leftBar :: leftBar}"></div>
+
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+
+            <div th:replace="~{buyer/fastJump :: fastJump}"></div>
+
+
+
+            <div class="album py-5 bg-light">
+                    <div class="container text-center">
+                        <h3 >收藏的商品</h3>
+                    </div>
+                <hr/>
+                <div class="container" >
+                    <div class="row" id="productListRow">
+                        <div class="col-md-4">
+                            <div class="card mb-4 box-shadow">
+                                <img class="card-img-top" src="/images/product.jpg" alt="商品标题">
+                                <div class="card-body">
+                                    <h1>商品标题</h1>
+                                    <div>
+                                        <span>$ 54.00</span>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted">商品状态 : 上架中</small>
+                                    </div>
+                                    <div>
+                                    <small class="text-muted">商品创建时间 : 2018/5/30</small>
+                                    </div>
+                                    <div>
+                                    <small class="text-muted">最后编辑时间 : 2018/5/30</small>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted">零食</small>
+                                    </div>
+                                    <p class="card-text">此处是商品的简单描述,为了界面美观应该设置字数上限.</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary  btn_collect"> <span class='glyphicon glyphicon-heart-empty'></span> 收藏</button>
+                                            <button type='button' class='btn btn-sm btn-outline-secondary btn_removeProduct'  productId='"+product.productId+"'>删除</button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="card mb-4 box-shadow">
+                                <img class="card-img-top" src="/images/product.jpg" alt="商品标题">
+                                <div class="card-body">
+                                    <h1>商品标题</h1>
+                                    <div>
+                                        <span>$ 54.00</span>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted">商品状态 : 上架中</small>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted">商品创建时间 : 2018/5/30</small>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted">最后编辑时间 : 2018/5/30</small>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted">零食</small>
+                                    </div>
+                                    <p class="card-text">此处是商品的简单描述,为了界面美观应该设置字数上限.</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary edit" produtyId="2">编辑</button>
+                                            <button type="button" class="btn btn-sm btn-outline-secondary">下架</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+               <!-- <%&#45;&#45;分页条&#45;&#45;%>-->
+                <div class="container" >
+                    <div class="row">
+                        <!-- 分页结果信息 -->
+                        <div class="col-md-6" id="product_page_info">
+                            分页信息
+                        </div>
+
+                        <!-- 导航条 -->
+                        <div class="col-md-6" id="product_page_nav">
+                            <nav aria-label="...">
+                                <ul class="pagination">
+                                    <li class="page-item disabled">
+                                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                                    </li>
+                                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                    <li class="page-item active">
+                                        <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
+                                    </li>
+                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">Next</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="album py-5 bg-light">
+                    <div class="container text-center">
+                        <h3 >收藏的店铺</h3>
+                    </div>
+                <hr/>
+                <div class="container" >
+                    <div class="row" id="shopListRow">
+                        <div class="col-md-4">
+                            <div class="card mb-4 box-shadow">
+                                <img class="card-img-top" src="/images/product.jpg" alt="店铺标题">
+                                <div class="card-body">
+                                    <h3>店铺名字</h3>
+                                    <div>
+                                        <span>所属用户: 小二</span>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted">所属区域 : 上海</small>
+                                    </div>
+
+                                    <div>
+                                        <small class="text-muted">店铺等级 : 1</small>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted">店铺创建时间 : 2018/5/30</small>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted">最后编辑时间 : 2018/5/30</small>
+                                    </div>
+
+                                    <p class="card-text">此处是店铺的简单描述.</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary">查看</button>
+                                            <button type="button" class="btn btn-sm btn-outline-secondary edit" produtyId="2">编辑</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+                    <!-- <%&#45;&#45;分页条&#45;&#45;%>-->
+                <div class="container" >
+                    <div class="row">
+                        <!-- 分页结果信息 -->
+                        <div class="col-md-6" id="shop_page_info">
+                            分页信息
+                        </div>
+
+                        <!-- 导航条 -->
+                        <div class="col-md-6" id="shop_page_nav">
+                            <nav aria-label="...">
+                                <ul class="pagination">
+                                    <li class="page-item disabled">
+                                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                                    </li>
+                                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                    <li class="page-item active">
+                                        <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
+                                    </li>
+                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">Next</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- FOOTER -->
+                <footer class="container">
+                    <p class="float-right"><a href="#">Back to top</a></p>
+                    <p>© 2017-2018 Company, Inc. · <a href="#">Privacy</a> · <a href="https://getbootstrap.com/docs/4.1/examples/carousel/#">Terms</a></p>
+                </footer>
+        </main>
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="/js/common/jquery.min.js"></script>
+<!--user-defined-js-->
+<script src="/js/buyer/favorite.js"></script>
+
+<script src="/js/common/popper.min.js"></script>
+<script src="/css/common/bootstrap-4.1.1/dist/js/bootstrap.min.js"></script>
+<script src="/js/common/holder.min.js"></script>
+
+<!-- Icons -->
+<script src="/js/common/feather.min.js"></script>
+<script>
+    feather.replace()
+</script>
+
+<!--;----- Graphs -----;-->
+<script src="/js/common/Chart.min.js"></script>
+
+
+
+
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewBox="0 0 500 500" preserveAspectRatio="none"
+     style="display: none; visibility: hidden; position: absolute; top: -100%; left: -100%;">
+    <defs>
+        <style type="text/css"></style>
+    </defs>
+    <text x="0" y="25" style="font-weight:bold;font-size:25pt;font-family:Arial, Helvetica, Open Sans, sans-serif">
+        500x500
+    </text>
+</svg>
+</body>
+</html>

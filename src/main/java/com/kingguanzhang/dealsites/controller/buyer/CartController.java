@@ -4,9 +4,10 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.kingguanzhang.dealsites.dto.Msg;
 import com.kingguanzhang.dealsites.pojo.Cart;
+import com.kingguanzhang.dealsites.pojo.FavoriteProduct;
 import com.kingguanzhang.dealsites.pojo.PersonInfo;
-import com.kingguanzhang.dealsites.pojo.Product;
 import com.kingguanzhang.dealsites.service.CartService;
+import com.kingguanzhang.dealsites.service.FavoriteProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +25,8 @@ public class CartController {
 
     @Autowired
     private CartService cartService;
+    @Autowired
+    private FavoriteProductService favoriteProductService;
 
     @RequestMapping(value = "/cart",method = RequestMethod.GET)
     private String showCartPage(){
@@ -41,6 +44,9 @@ public class CartController {
     private Msg getCartList(@RequestParam(value = "pn",defaultValue = "1") Integer pn, HttpServletRequest request){
         //在用户登录成功跳转到首页的时候就已经在session中写入了用户信息;
         PersonInfo personInfo = (PersonInfo) request.getSession().getAttribute("personInfo");
+        if (null == personInfo){
+            return Msg.fail().setMsg("查询失败,请重新登录");
+        }
         PageHelper.startPage(pn,16);
         List<Cart> cartList = cartService.getCartList(personInfo.getUserId());
         if (0 == cartList.size()){
@@ -48,7 +54,14 @@ public class CartController {
         }
 
         PageInfo pageInfo = new PageInfo(cartList,5);
-        return Msg.success().setMsg("获取购物车成功").add("pageInfo",pageInfo);
+        Msg msg =Msg.success().setMsg("获取商品集合成功").add("pageInfo", pageInfo);
+
+        //查询出用户收藏的商品的Id,为了在首页的商品卡牌中判断是显示收藏还是取消收藏按钮;
+        if (null != personInfo){
+            List<FavoriteProduct> favoriteProductList = favoriteProductService.getFavoriteProductList(personInfo.getUserId());
+            msg.add("favoriteProductList",favoriteProductList);
+        }
+        return msg;
     }
 
     /**
@@ -72,18 +85,18 @@ public class CartController {
 
     /**
      * 从购物车中移除批量商品
-     * @param productId
+     * @param productIds
      * @param request
      * @return
      */
     @RequestMapping(value = "/ajax/removeProductFromCartBatch",method = RequestMethod.POST)
     @ResponseBody
-    private Msg removeProductFromCartBatch(@RequestParam("productId")String productId, HttpServletRequest request){
+    private Msg removeProductFromCartBatch(@RequestParam("productIds")String productIds, HttpServletRequest request){
         //在用户登录成功跳转到首页的时候就已经在session中写入了用户信息;
         PersonInfo personInfo = (PersonInfo) request.getSession().getAttribute("personInfo");
-        String[] productIds = productId.split(",");
+        String[] productIdArray = productIds.split(",");
         List<Integer> productIdList = new ArrayList<>();
-        for (String id:productIds){
+        for (String id:productIdArray){
             productIdList.add(Integer.parseInt(id));
         }
         Integer i = cartService.removeProductFromCartBatch(personInfo.getUserId(),productIdList);

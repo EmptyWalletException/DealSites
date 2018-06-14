@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kingguanzhang.dealsites.dao.FavoriteShopMapper">
+  <resultMap id="BaseResultMap" type="com.kingguanzhang.dealsites.pojo.FavoriteShop">
+    <id column="favorite_shop_id" jdbcType="INTEGER" property="favoriteShopId" />
+    <result column="shop_id" jdbcType="INTEGER" property="shopId" />
+    <result column="personInfo_id" jdbcType="INTEGER" property="personinfoId" />
+    <association property="shop" column="shop_id" select="com.kingguanzhang.dealsites.dao.ShopMapper.selectByPrimaryKey" javaType="com.kingguanzhang.dealsites.pojo.Shop" />
+    <association property="personInfo" column="owner_id" select="com.kingguanzhang.dealsites.dao.PersonInfoMapper.selectByPrimaryKey" javaType="com.kingguanzhang.dealsites.pojo.PersonInfo" />
+
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    favorite_shop_id, shop_id, personInfo_id
+  </sql>
+  <select id="selectByExample" parameterType="com.kingguanzhang.dealsites.pojo.FavoriteShopExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from tb_favorite_shop
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_favorite_shop
+    where favorite_shop_id = #{favoriteShopId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tb_favorite_shop
+    where favorite_shop_id = #{favoriteShopId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.kingguanzhang.dealsites.pojo.FavoriteShopExample">
+    delete from tb_favorite_shop
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.kingguanzhang.dealsites.pojo.FavoriteShop">
+    insert into tb_favorite_shop (favorite_shop_id, shop_id, personInfo_id
+      )
+    values (#{favoriteShopId,jdbcType=INTEGER}, #{shopId,jdbcType=INTEGER}, #{personinfoId,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.kingguanzhang.dealsites.pojo.FavoriteShop">
+    insert into tb_favorite_shop
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="favoriteShopId != null">
+        favorite_shop_id,
+      </if>
+      <if test="shopId != null">
+        shop_id,
+      </if>
+      <if test="personinfoId != null">
+        personInfo_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="favoriteShopId != null">
+        #{favoriteShopId,jdbcType=INTEGER},
+      </if>
+      <if test="shopId != null">
+        #{shopId,jdbcType=INTEGER},
+      </if>
+      <if test="personinfoId != null">
+        #{personinfoId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.kingguanzhang.dealsites.pojo.FavoriteShopExample" resultType="java.lang.Long">
+    select count(*) from tb_favorite_shop
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update tb_favorite_shop
+    <set>
+      <if test="record.favoriteShopId != null">
+        favorite_shop_id = #{record.favoriteShopId,jdbcType=INTEGER},
+      </if>
+      <if test="record.shopId != null">
+        shop_id = #{record.shopId,jdbcType=INTEGER},
+      </if>
+      <if test="record.personinfoId != null">
+        personInfo_id = #{record.personinfoId,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update tb_favorite_shop
+    set favorite_shop_id = #{record.favoriteShopId,jdbcType=INTEGER},
+      shop_id = #{record.shopId,jdbcType=INTEGER},
+      personInfo_id = #{record.personinfoId,jdbcType=INTEGER}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.kingguanzhang.dealsites.pojo.FavoriteShop">
+    update tb_favorite_shop
+    <set>
+      <if test="shopId != null">
+        shop_id = #{shopId,jdbcType=INTEGER},
+      </if>
+      <if test="personinfoId != null">
+        personInfo_id = #{personinfoId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where favorite_shop_id = #{favoriteShopId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.kingguanzhang.dealsites.pojo.FavoriteShop">
+    update tb_favorite_shop
+    set shop_id = #{shopId,jdbcType=INTEGER},
+      personInfo_id = #{personinfoId,jdbcType=INTEGER}
+    where favorite_shop_id = #{favoriteShopId,jdbcType=INTEGER}
+  </update>
+</mapper>

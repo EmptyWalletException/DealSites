@@ -4,8 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.kingguanzhang.dealsites.dto.Msg;
+import com.kingguanzhang.dealsites.pojo.FavoriteProduct;
+import com.kingguanzhang.dealsites.pojo.PersonInfo;
 import com.kingguanzhang.dealsites.pojo.Product;
 import com.kingguanzhang.dealsites.pojo.ProductCategory;
+import com.kingguanzhang.dealsites.service.FavoriteProductService;
 import com.kingguanzhang.dealsites.service.ProductCategoryService;
 import com.kingguanzhang.dealsites.service.ProductService;
 import com.kingguanzhang.dealsites.util.RequestUtil;
@@ -32,6 +35,9 @@ public class ProductManagementController {
     @Autowired
     private ProductCategoryService productCategoryService;
 
+    @Autowired
+    private FavoriteProductService favoriteProductService;
+
     @RequestMapping("/seller/showEditProduct/{productId}")
     public String showEditProduct(@PathVariable("productId") Integer productId, Model model) {
         Product product = productService.getProduct(productId);
@@ -49,14 +55,23 @@ public class ProductManagementController {
      */
     @RequestMapping(value = "/index/getAllOnSellProductList",method = RequestMethod.POST)
     @ResponseBody
-    public Msg getAllOnSellProductList(@RequestParam(value = "pn",defaultValue = "1")Integer pn) {
+    public Msg getAllOnSellProductList(@RequestParam(value = "pn",defaultValue = "1")Integer pn,HttpServletRequest request) {
         //使用分页插件官方推荐的第二种方式开启分页查询;
         PageHelper.startPage(pn, 16);
         //然后紧跟的查询就是分页查询;
         List<Product> productList =productService.getAllOnSellProductList();
         //查询之后使用PageInfo来包装,方便在页面视图中处理页码,下面用的构造器第二个参数是页面底部可供点击的连续页码数;
         PageInfo pageInfo = new PageInfo(productList,5);
-        return Msg.success().setMsg("获取商品集合成功").add("pageInfo", pageInfo);
+        Msg msg =Msg.success().setMsg("获取商品集合成功").add("pageInfo", pageInfo);
+
+        //查询出用户收藏的商品的Id,为了在首页的商品卡牌中判断是显示收藏还是取消收藏按钮;
+        PersonInfo personInfo = (PersonInfo) request.getSession().getAttribute("personInfo");
+        if (null != personInfo){
+            List<FavoriteProduct> favoriteProductList = favoriteProductService.getFavoriteProductList(personInfo.getUserId());
+            msg.add("favoriteProductList",favoriteProductList);
+        }
+
+        return msg;
     }
 
      /**
@@ -67,11 +82,20 @@ public class ProductManagementController {
      */
     @RequestMapping(value = "/ajax/getOnSellProductListByCategoryId",method = RequestMethod.POST)
     @ResponseBody
-    public Msg getOnSellProductListByCategoryId(@RequestParam("categoryId") Integer categoryId, @RequestParam(value = "pn",defaultValue = "1") Integer pn) {
+    public Msg getOnSellProductListByCategoryId(@RequestParam("categoryId") Integer categoryId, @RequestParam(value = "pn",defaultValue = "1") Integer pn,HttpServletRequest request) {
         PageHelper.startPage(pn,8);
         List<Product> productList = productService.getOnSellProductListByCategoryId(categoryId,null);
         PageInfo pageInfo = new PageInfo(productList,5);
-        return Msg.success().setMsg("获取分类下所有商品成功").add("pageInfo",pageInfo);
+        Msg msg =Msg.success().setMsg("获取商品集合成功").add("pageInfo", pageInfo);
+
+        //查询出用户收藏的商品的Id,为了在首页的商品卡牌中判断是显示收藏还是取消收藏按钮;
+        PersonInfo personInfo = (PersonInfo) request.getSession().getAttribute("personInfo");
+        if (null != personInfo){
+            List<FavoriteProduct> favoriteProductList = favoriteProductService.getFavoriteProductList(personInfo.getUserId());
+            msg.add("favoriteProductList",favoriteProductList);
+        }
+
+        return msg;
     }
 
     /**
@@ -87,7 +111,16 @@ public class ProductManagementController {
         PageHelper.startPage(pn,8);
         List<Product> productList = productService.getOnSellProductListByCategoryId(categoryId,shopId);
         PageInfo pageInfo = new PageInfo(productList,5);
-        return Msg.success().setMsg("获取分类下所有商品成功").add("pageInfo",pageInfo);
+        Msg msg =Msg.success().setMsg("获取商品集合成功").add("pageInfo", pageInfo);
+
+        //查询出用户收藏的商品的Id,为了在首页的商品卡牌中判断是显示收藏还是取消收藏按钮;
+        PersonInfo personInfo = (PersonInfo) request.getSession().getAttribute("personInfo");
+        if (null != personInfo){
+            List<FavoriteProduct> favoriteProductList = favoriteProductService.getFavoriteProductList(personInfo.getUserId());
+            msg.add("favoriteProductList",favoriteProductList);
+        }
+
+        return msg;
     }
 
     /**
@@ -234,7 +267,16 @@ public class ProductManagementController {
         List<Product> productList = productService.getShelveProductList(shopId);
         //查询之后使用PageInfo来包装,方便在页面视图中处理页码,下面用的构造器第二个参数是页面底部可供点击的连续页码数;
         PageInfo pageInfo = new PageInfo(productList,5);
-        return Msg.success().setMsg("获取商品集合成功").add("pageInfo", pageInfo);
+        Msg msg =Msg.success().setMsg("获取商品集合成功").add("pageInfo", pageInfo);
+
+        //查询出用户收藏的商品的Id,为了在首页的商品卡牌中判断是显示收藏还是取消收藏按钮;
+        PersonInfo personInfo = (PersonInfo) request.getSession().getAttribute("personInfo");
+        if (null != personInfo){
+            List<FavoriteProduct> favoriteProductList = favoriteProductService.getFavoriteProductList(personInfo.getUserId());
+            msg.add("favoriteProductList",favoriteProductList);
+        }
+
+        return msg;
     }
 
     /**

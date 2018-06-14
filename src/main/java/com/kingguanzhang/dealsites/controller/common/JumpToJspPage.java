@@ -1,7 +1,6 @@
 package com.kingguanzhang.dealsites.controller.common;
 
 
-import com.kingguanzhang.dealsites.controller.seller.AreaController;
 import com.kingguanzhang.dealsites.pojo.Area;
 import com.kingguanzhang.dealsites.pojo.LocalAuth;
 import com.kingguanzhang.dealsites.pojo.PersonInfo;

@@ -3,7 +3,9 @@ package com.kingguanzhang.dealsites.controller.seller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kingguanzhang.dealsites.dto.Msg;
+import com.kingguanzhang.dealsites.pojo.PersonInfo;
 import com.kingguanzhang.dealsites.pojo.Shop;
+import com.kingguanzhang.dealsites.service.FavoriteShopService;
 import com.kingguanzhang.dealsites.service.ShopService;
 import com.kingguanzhang.dealsites.util.RequestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,8 @@ public class ShopManagementController {
 
     @Autowired
     private ShopService shopService;
+    @Autowired
+    private FavoriteShopService favoriteShopService;
 
 
     @RequestMapping(value = "/getShop",method = RequestMethod.GET)//这里的shopId需要修改成通过session中用户id来查询绑定的商店id
@@ -30,13 +34,22 @@ public class ShopManagementController {
     public Msg getShop(HttpServletRequest request){
 
         Integer shopId = (Integer) request.getSession().getAttribute("shopId");
-
+        PersonInfo personInfo = (PersonInfo) request.getSession().getAttribute("personInfo");
         //将shopId直接写入session,方便后续网页内容的查询;
         if (null == shopId){
             return Msg.fail().setMsg("获取商店信息失败!");
         }
         Shop shop = shopService.getShop(shopId);
-        return Msg.success().add("shop",shop);
+        Msg msg =Msg.success().add("shop",shop);
+
+        //查询当前用户的收藏店铺,用于判断页面是否显示收藏店铺按钮
+        if (null != personInfo) {
+            Integer integer = favoriteShopService.getFavoriteShop(personInfo.getUserId(), shopId);
+            if (0 < integer){
+               return msg.add("isFavorite",true);
+            }
+        }
+        return msg.add("isFavorite",false);
     }
 
     /**

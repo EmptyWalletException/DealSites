@@ -79,7 +79,9 @@
 
 
 
-        <table  tableName="tb_cart" domainObjectName="Cart" >
+        <table  tableName="tb_favorite_shop" domainObjectName="FavoriteShop" >
+        </table>
+        <table  tableName="tb_favorite_product" domainObjectName="FavoriteProduct" >
         </table>
 
     </context>
