@@ -18,13 +18,13 @@
                 <a class="nav-link" href="/index">网站首页 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/buyer/cart">买家板块 </a>
+                <a class="nav-link" href="/buyer/cart/cartPage">买家板块 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/shopManagement">卖家板块 </a>
+                <a class="nav-link" href="/seller/shop/shopManagementPage">卖家板块 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/admin/shopManagement" sec:authorize="hasRole('ADMIN')">管理员板块 </a>
+                <a class="nav-link" href="/admin/shop/ManagementPage" sec:authorize="hasRole('ADMIN')">管理员板块 </a>
             </li>
 
             <form class="form-inline mt-2 mt-md-0">
@@ -39,8 +39,8 @@
                 <div class="row" id="user">
                     <img id="userHeadImg" class="rounded-circle figure-img" src="\images\testhead.jpg" alt="头像"  sec:authorize="isAuthenticated()"  />
                     <a id="login" href="/login" class="nav-link" th:if="${null == session.user }" sec:authorize="isAnonymous()" >登录</a>
-                    <a id="register" href="/register/registerUser" class="nav-link"  sec:authorize="isAnonymous()" >注册</a>
-                    <a id="userCenter" href="/personInfo" class="nav-link" sec:authorize="isAuthenticated()" sec:authentication="name" ></a>
+                    <a id="register" href="/common/register/registerUserPage" class="nav-link"  sec:authorize="isAnonymous()" >注册</a>
+                    <a id="userCenter" href="#" class="nav-link" sec:authorize="isAuthenticated()" sec:authentication="name" ></a>
                     <a id="exit"href="/logout" class="nav-link" sec:authorize="isAuthenticated()" >安全退出</a>
                 </div>
             </li>

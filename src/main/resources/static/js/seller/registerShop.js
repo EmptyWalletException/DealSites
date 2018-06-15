@@ -9,7 +9,7 @@
 function getArea(){
     /* alert("进入js代码");*/
     $.ajax({
-        url:"/ajax/Area",
+        url:"/seller/ajax/area/all",
         type:"get",
         success:function(result){
             /*    alert("进入ajax代码");*/
@@ -45,7 +45,7 @@ $("#submit_RegisterShop").click(function(){
     formData.append("shopImg",shopImg);
 
     $.ajax({
-        url:"/addShop",
+        url:"/seller/ajax/shop/add",
         type:"POST",
         data:formData,
         async: false,
@@ -55,7 +55,7 @@ $("#submit_RegisterShop").click(function(){
         success:function(result){
             alert(result.msg);
             /* 这里要检查一下后端是否返回了错误报告信息 */
-            if(100 == result.code){
+            if(200 == result.code){
                 alert("注册成功!");
             }else{
                 alert("注册失败了!");

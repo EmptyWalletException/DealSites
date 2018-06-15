@@ -24,12 +24,12 @@ public class FavoriteShopController {
     private FavoriteShopService favoriteShopService;
 
     /**
-     * 收藏商品
+     * 收藏店铺
      * @param shopId
      * @param request
      * @return
      */
-    @RequestMapping(value = "/ajax/addFavoriteShop",method = RequestMethod.POST)
+    @RequestMapping(value = "/ajax/favoriteShop/add",method = RequestMethod.POST)
     @ResponseBody
     private Msg addFavoriteShop(@RequestParam("shopId")Integer shopId, HttpServletRequest request){
         PersonInfo personInfo = (PersonInfo) request.getSession().getAttribute("personInfo");
@@ -38,7 +38,13 @@ public class FavoriteShopController {
         if (0 < integer){
             return Msg.success().setMsg("此店铺已经在您的收藏夹中了");
         }
-        Integer i = favoriteShopService.addFavoriteShop(shopId,personInfo.getUserId());
+        int i = 0;
+        try{
+             i = favoriteShopService.addFavoriteShop(shopId,personInfo.getUserId());
+        }catch (Exception e){
+            e.printStackTrace();
+            return Msg.fail().setMsg("收藏失败");
+        }
         if (0 >= i){
             return Msg.fail().setMsg("收藏失败,请重新登录后再尝试");
         }
@@ -46,16 +52,22 @@ public class FavoriteShopController {
     }
 
     /**
-     * 取消收藏商品
+     * 取消收藏店铺
      * @param shopId
      * @param request
      * @return
      */
-    @RequestMapping(value = "/ajax/removeFavoriteShop",method = RequestMethod.POST)
+    @RequestMapping(value = "/ajax/favoriteShop/delete",method = RequestMethod.POST)
     @ResponseBody
     private Msg removeFavoriteShop(@RequestParam("shopId")Integer shopId, HttpServletRequest request){
         PersonInfo personInfo = (PersonInfo) request.getSession().getAttribute("personInfo");
-        Integer i = favoriteShopService.removeFavoriteShop(shopId,personInfo.getUserId());
+        int i = 0;
+        try{
+             i = favoriteShopService.removeFavoriteShop(shopId,personInfo.getUserId());
+        }catch (Exception e){
+            e.printStackTrace();
+            return Msg.fail().setMsg("取消收藏失败");
+        }
         if (0 >= i){
             return Msg.fail().setMsg("取消收藏失败,请重新登录后再尝试");
         }
@@ -63,12 +75,12 @@ public class FavoriteShopController {
     }
 
     /**
-     * 获取收藏的商品列表
+     * 获取收藏的店铺列表
      * @param pn
      * @param request
      * @return
      */
-    @RequestMapping(value = "/ajax/getFavoriteShopList",method = RequestMethod.POST)
+    @RequestMapping(value = "/ajax/favoriteShop/all",method = RequestMethod.POST)
     @ResponseBody
     private Msg getFavoriteShopList(@RequestParam("pn")Integer pn, HttpServletRequest request){
         PersonInfo personInfo = (PersonInfo) request.getSession().getAttribute("personInfo");

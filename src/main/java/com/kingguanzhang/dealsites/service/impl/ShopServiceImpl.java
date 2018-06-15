@@ -113,6 +113,9 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     public Shop getShopByUserId(Integer userId) {
+        if (null == userId ){
+            throw new RuntimeException("未能获取到用户Id");
+        }
         ShopExample shopExample = new ShopExample();
         ShopExample.Criteria criteria = shopExample.createCriteria();
         criteria.andOwnerIdEqualTo(userId);

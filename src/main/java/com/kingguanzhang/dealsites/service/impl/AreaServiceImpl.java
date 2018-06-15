@@ -17,7 +17,7 @@ public class AreaServiceImpl implements AreaService {
 
     @Override
     public List<Area> getAreas() {
-        List<Area> areaList = areaMapper.selectByExample(null);
+            List<Area> areaList = areaMapper.selectByExample(null);
         return areaList;
     }
 }

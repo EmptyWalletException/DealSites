@@ -28,7 +28,11 @@ public class CartController {
     @Autowired
     private FavoriteProductService favoriteProductService;
 
-    @RequestMapping(value = "/cart",method = RequestMethod.GET)
+    /**
+     * 跳转到购物车页面
+     * @return
+     */
+    @RequestMapping(value = "/cart/cartPage",method = RequestMethod.GET)
     private String showCartPage(){
         return "/buyer/cart";
     }
@@ -39,7 +43,7 @@ public class CartController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/ajax/getCartList",method = RequestMethod.POST)
+    @RequestMapping(value = "/ajax/cart/all",method = RequestMethod.POST)
     @ResponseBody
     private Msg getCartList(@RequestParam(value = "pn",defaultValue = "1") Integer pn, HttpServletRequest request){
         //在用户登录成功跳转到首页的时候就已经在session中写入了用户信息;
@@ -70,12 +74,18 @@ public class CartController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/ajax/removeProductFromCart",method = RequestMethod.POST)
+    @RequestMapping(value = "/ajax/cart/removeProduct",method = RequestMethod.POST)
     @ResponseBody
     private Msg removeProductFromCart(@RequestParam("productId")Integer productId, HttpServletRequest request){
         //在用户登录成功跳转到首页的时候就已经在session中写入了用户信息;
         PersonInfo personInfo = (PersonInfo) request.getSession().getAttribute("personInfo");
-        Integer i = cartService.removeProductFromCart(personInfo.getUserId(),productId);
+        int i = 0;
+        try{
+         i = cartService.removeProductFromCart(personInfo.getUserId(),productId);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Msg.fail().setMsg("移除商品失败");
+        }
         if (0 == i){
             return Msg.fail().setMsg("移除商品失败,请重新登录后再尝试!");
         }
@@ -89,7 +99,7 @@ public class CartController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/ajax/removeProductFromCartBatch",method = RequestMethod.POST)
+    @RequestMapping(value = "/ajax/cart/removeProductBatch",method = RequestMethod.POST)
     @ResponseBody
     private Msg removeProductFromCartBatch(@RequestParam("productIds")String productIds, HttpServletRequest request){
         //在用户登录成功跳转到首页的时候就已经在session中写入了用户信息;
@@ -99,7 +109,13 @@ public class CartController {
         for (String id:productIdArray){
             productIdList.add(Integer.parseInt(id));
         }
-        Integer i = cartService.removeProductFromCartBatch(personInfo.getUserId(),productIdList);
+        int i = 0;
+        try{
+          i = cartService.removeProductFromCartBatch(personInfo.getUserId(),productIdList);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Msg.fail().setMsg("移除失败");
+        }
         if (0 >= i){
             return Msg.fail().setMsg("移除商品失败,请重新登录后再尝试!");
         }
@@ -112,7 +128,7 @@ public class CartController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/ajax/addProductToCart",method = RequestMethod.POST)
+    @RequestMapping(value = "/ajax/cart/addProduct",method = RequestMethod.POST)
     @ResponseBody
     private Msg addProductToCart(@RequestParam("productId")Integer productId,HttpServletRequest request){
         //在用户登录成功跳转到首页的时候就已经在session中写入了用户信息;
@@ -123,10 +139,15 @@ public class CartController {
         //添加之前先要查一下购物车里是否已经有这个商品,有则将计数加一,否则就新增一行数据;
         Integer i =0 ;
         i = cartService.getProductItem(personInfo.getUserId(),productId);
-        if (0 < i){
-            i =cartService.updateAddProductItem(personInfo.getUserId(),productId);
-        }else {
-            i = cartService.addProductToCart(personInfo.getUserId(), productId);
+        try{
+            if (0 < i){
+                i =cartService.updateAddProductItem(personInfo.getUserId(),productId);
+            }else {
+                i = cartService.addProductToCart(personInfo.getUserId(), productId);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return Msg.fail().setMsg("添加商品失败");
         }
         if (0 >= i){
             return Msg.fail().setMsg("添加商品进购物车失败");
@@ -135,7 +156,13 @@ public class CartController {
     }
 
 
-    @RequestMapping(value = "/ajax/addProductToCartBatch",method = RequestMethod.POST)
+    /**
+     * 批量添加商品进购物车
+     * @param productId
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/ajax/cart/addProductBatch",method = RequestMethod.POST)
     @ResponseBody
     private Msg addProductToCartBatch(@RequestParam("productId")String productId,HttpServletRequest request){
         //在用户登录成功跳转到首页的时候就已经在session中写入了用户信息;
@@ -145,7 +172,13 @@ public class CartController {
         for (String id:productIds){
             productIdList.add(Integer.parseInt(id));
         }
-        Integer i = cartService.addProductToCartBatch(personInfo.getUserId(),productIdList);
+        int i = 0;
+        try{
+          i = cartService.addProductToCartBatch(personInfo.getUserId(),productIdList);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Msg.fail().setMsg("添加失败");
+        }
         if (0 >= i){
             return Msg.fail().setMsg("添加商品进购物车失败");
         }
@@ -158,12 +191,18 @@ public class CartController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/ajax/updateAddProduct",method = RequestMethod.POST)
+    @RequestMapping(value = "/ajax/cart/addProductCount",method = RequestMethod.POST)
     @ResponseBody
     private Msg updateAddProduct(@RequestParam("productId")Integer productId,HttpServletRequest request){
         //在用户登录成功跳转到首页的时候就已经在session中写入了用户信息;
         PersonInfo personInfo = (PersonInfo) request.getSession().getAttribute("personInfo");
-        Integer integer = cartService.updateAddProductItem(personInfo.getUserId(), productId);
+        int integer = 0;
+        try{
+             integer = cartService.updateAddProductItem(personInfo.getUserId(), productId);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Msg.fail().setMsg("增加商品数量失败");
+        }
         if (0 >= integer){
             return Msg.fail().setMsg("增加商品数量失败");
         }
@@ -176,15 +215,21 @@ public class CartController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/ajax/updateMinusProduct",method = RequestMethod.POST)
+    @RequestMapping(value = "/ajax/cart/minusProductCount",method = RequestMethod.POST)
     @ResponseBody
     private Msg updateMinusProduct(@RequestParam("productId")Integer productId,HttpServletRequest request){
         //在用户登录成功跳转到首页的时候就已经在session中写入了用户信息;
         PersonInfo personInfo = (PersonInfo) request.getSession().getAttribute("personInfo");
-        Integer integer = cartService.updateMinusProductItem(personInfo.getUserId(), productId);
-        if (0 >= integer){
-            return Msg.fail().setMsg("增加商品数量失败");
+        int integer = 0;
+        try{
+          integer = cartService.updateMinusProductItem(personInfo.getUserId(), productId);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Msg.fail().setMsg("减少商品数量失败");
         }
-        return Msg.success().setMsg("增加商品数量成功");
+        if (0 >= integer){
+            return Msg.fail().setMsg("减少商品数量失败");
+        }
+        return Msg.success().setMsg("减少商品数量成功");
     }
 }

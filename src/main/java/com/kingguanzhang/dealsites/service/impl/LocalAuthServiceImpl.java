@@ -16,8 +16,17 @@ public class LocalAuthServiceImpl implements LocalAuthService {
 
     @Autowired
     private LocalAuthMapper localAuthMapper;
+
+    /**
+     * 查询用户账号信息;
+     * @param username
+     * @return
+     */
     @Override
     public List<LocalAuth> getLocalAuthByLoginUsername(String username) {
+        if (null == username){
+            throw new RuntimeException("未能获取到账号");
+        }
         LocalAuthExample localAuthExample = new LocalAuthExample();
         LocalAuthExample.Criteria criteria = localAuthExample.createCriteria();
         criteria.andUsernameEqualTo(username);
@@ -26,14 +35,23 @@ public class LocalAuthServiceImpl implements LocalAuthService {
         return localAuths;
     }
 
+    /**
+     * 保存用户账号信息到数据库;
+     * @param localAuth
+     * @return
+     */
     @Override
     public int addLocalAuth(LocalAuth localAuth) {
+        if (null == localAuth){
+            throw new RuntimeException("未能获取到账号信息");
+        }
         localAuth.setCreateTime(new Date(System.currentTimeMillis()));
         localAuth.setEditTime(new Date(System.currentTimeMillis()));
-
-        int i = localAuthMapper.insertSelective(localAuth);
-        if (0 > i){
-            throw new RuntimeException("账户信息保存失败!");
+        int i=0;
+        try{
+             i = localAuthMapper.insertSelective(localAuth);
+        }catch (Exception e){
+            throw new RuntimeException("保存用户信息失败");
         }
         return i;
     }

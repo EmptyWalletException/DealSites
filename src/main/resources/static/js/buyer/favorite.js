@@ -9,8 +9,8 @@ var currentProductPage;
 var maxShopPage;
 var currentShopPage;
 $(function(){
-    to_product_page("/buyer/ajax/getFavoriteProductList",1);
-    to_shop_page("/buyer/ajax/getFavoriteShopList",1);
+    to_product_page("/buyer/ajax/favoriteProduct/all",1);
+    to_shop_page("/buyer/ajax/favoriteShop/all",1);
 })
 
 /*以下是收藏的商品区域*/
@@ -22,7 +22,7 @@ function to_product_page(url,pn){
         type:"post",
         success:function(result){
             $("#productListRow").empty();
-            if (200 == result.code){
+            if (100 == result.code){
                 $("#productListRow").append(
                     "<div class='container text-center'><h3 >没有收藏商品</h3></div>"
                 );
@@ -49,7 +49,7 @@ function build_product_table(result){
         $("#productListRow").append(
             "<div class=\"col-lg-3 col-md-6 col-sm-6\">" +
             "<div class=\"card mb-4 box-shadow\">" +
-            "<img class=\"card-img-top\" src=\"../" +product.imgAddr +"\" alt=\"商品图片\">" +
+            "<img class=\"card-img-top\" src=\"../../" +product.imgAddr +"\" alt=\"商品图片\">" +
             "<div class=\"card-body\">" +
 
             "<h1>" +product.productName + "</h1>" +
@@ -57,7 +57,7 @@ function build_product_table(result){
             "<span>$ " +product.normalPrice + "</span>"+
             "</div>" +
             "<div class='status'>" +
-            "<a class=\"text-muted\" href=/shopDetails/'"+ product.shop.shopId+"'>店铺 : "+ product.shop.shopName +"</a>" +
+            "<a class=\"text-muted\" href=/shop/shopDetailsPage/'"+ product.shop.shopId+"'>店铺 : "+ product.shop.shopName +"</a>" +
             "</div>" +
             "<div>" +
             "<small class=\"text-muted\">商品创建时间 : " +createTime.toLocaleDateString() +"</small>" +
@@ -90,12 +90,12 @@ $("#productListRow").on('click','.btn_removeProduct',function () {
     var productId = $(this).attr("productId");
     if (true == confirmRemove){
         $.ajax({
-            url:"/buyer/ajax/removeFavoriteProduct",
+            url:"/buyer/ajax/favoriteProduct/delete",
             type:'POST',
             data:{'productId':productId},
             success:function (result) {
                 alert(result.msg);
-                to_product_page("/buyer/ajax/getFavoriteProductList",currentProductPage);
+                to_product_page("/buyer/ajax/favoriteProduct/all",currentProductPage);
             }
         });
     } else{
@@ -230,7 +230,7 @@ function build_shop_table(result){
                     $("#shopListRow").append(
                         "<div class=\"col-lg-3 col-md-6 col-sm-6\">" +
                             "<div class=\"card mb-4 box-shadow\">" +
-                                "<img class=\"card-img-top\" src=\"../" +shop.shopImg +"\" alt=\"店铺名称\">" +
+                                "<img class=\"card-img-top\" src=\"../../../" +shop.shopImg +"\" alt=\"店铺名称\">" +
                             "<div class=\"card-body\">" +
 
                                 "<h1>" +shop.shopName + "</h1>" +
@@ -253,7 +253,7 @@ function build_shop_table(result){
                                 "<p class=\"card-text\">" +shop.shopDesc + "</p>" +
                                 "<div class=\"\">" +
                                     "<div class=\"btn-group\">" +
-                                        "<a type=\"button\" class=\"btn btn-sm btn-outline-secondary btn_shopDetails\"  href='/common/shopDetails/"+shop.shopId+"'>详情</a>" +
+                                        "<a type=\"button\" class=\"btn btn-sm btn-outline-secondary btn_shopDetails\"  href='/shop/shopDetailsPage/"+shop.shopId+"'>详情</a>" +
                                         "<a type=\"button\" class=\"btn btn-sm btn-outline-secondary btn_removeFavoriteShop\" shopId='"+shop.shopId +"' ><span class='glyphicon glyphicon-heart'></span> 取消收藏</a>" +
                                     "</div>" +
                                 "</div>" +
@@ -270,12 +270,12 @@ $("#shopListRow").on('click','.btn_removeFavoriteShop',function () {
     var shopId = $(this).attr("shopId");
     if (true == confirmRemove){
         $.ajax({
-            url:"/buyer/ajax/removeFavoriteShop",
+            url:"/buyer/ajax/favoriteShop/delete",
             type:'POST',
             data:{'shopId':shopId},
             success:function (result) {
                 alert(result.msg);
-                to_product_page("/buyer/ajax/getFavoriteShopList",currentProductPage);
+                to_shop_page("/buyer/ajax/favoriteShop/all",currentProductPage);
             }
         });
     } else{

@@ -4,7 +4,7 @@
 var maxPage;
 var currentPage;
 $(function(){
-    to_page("/buyer/ajax/getCartList",1);
+    to_page("/buyer/ajax/cart/all",1);
     changeBatchDeleteButton();
 })
 
@@ -17,7 +17,7 @@ function to_page(url,pn){
         type:"post",
         success:function(result){
             $("#shopListRow").empty();
-            if (200 == result.code){
+            if (100 == result.code){
                 $("#shopListRow").append(
                     "<div class='container text-center'><h3 >购物车为空</h3></div>"
                 );
@@ -63,7 +63,7 @@ function build_product_table(result){
                         $("#shopListRow").append(
                             "<div class=\"col-lg-3 col-md-6 col-sm-6\">" +
                             "<div class=\"card mb-4 box-shadow\">" +
-                            "<img class=\"card-img-top\" src=\"../" +product.imgAddr +"\" alt=\"商品图片\">" +
+                            "<img class=\"card-img-top\" src=\"../../../" +product.imgAddr +"\" alt=\"商品图片\">" +
                             "<div class=\"card-body\">" +
 
                             "<h1>" +product.productName + "</h1>" +
@@ -71,7 +71,7 @@ function build_product_table(result){
                             "<span>$ " +product.normalPrice + "</span>"+
                             "</div>" +
                             "<div class='status'>" +
-                            "<a class=\"text-muted\" href='/common/shopDetails/"+ product.shop.shopId+"'>店铺 : "+ product.shop.shopName +"</a>" +
+                            "<a class=\"text-muted\" href='/common/shop/shopDetailsPage/"+ product.shop.shopId+"'>店铺 : "+ product.shop.shopName +"</a>" +
                             "</div>" +
                             "<div>" +
                             "<small class=\"text-muted\">商品创建时间 : " +createTime.toLocaleDateString() +"</small>" +
@@ -106,7 +106,7 @@ function build_product_table(result){
                         $("#shopListRow").append(
                             "<div class=\"col-lg-3 col-md-6 col-sm-6\">" +
                             "<div class=\"card mb-4 box-shadow\">" +
-                            "<img class=\"card-img-top\" src=\"../" +product.imgAddr +"\" alt=\"商品图片\">" +
+                            "<img class=\"card-img-top\" src=\"../../../" +product.imgAddr +"\" alt=\"商品图片\">" +
                             "<div class=\"card-body\">" +
 
                             "<h1>" +product.productName + "</h1>" +
@@ -114,7 +114,7 @@ function build_product_table(result){
                             "<span>$ " +product.normalPrice + "</span>"+
                             "</div>" +
                             "<div class='status'>" +
-                            "<a class=\"text-muted\" href='/common/shopDetails/"+ product.shop.shopId+"'>店铺 : "+ product.shop.shopName +"</a>" +
+                            "<a class=\"text-muted\" href='/common/shop/shopDetailsPage/"+ product.shop.shopId+"'>店铺 : "+ product.shop.shopName +"</a>" +
                             "</div>" +
                             "<div>" +
                             "<small class=\"text-muted\">商品创建时间 : " +createTime.toLocaleDateString() +"</small>" +
@@ -165,12 +165,12 @@ $("#shopListRow").on('click','.btn_removeProduct',function () {
     var productId = $(this).attr("productId");
     if (true == confirmRemove){
         $.ajax({
-            url:"/buyer/ajax/removeProductFromCart",
+            url:"/buyer/ajax/cart/removeProduct",
             type:'POST',
             data:{'productId':productId},
             success:function (result) {
                 alert(result.msg);
-                to_page("/buyer/ajax/getCartList",currentPage);
+                to_page("/buyer/ajax/cart/all",currentPage);
             }
         });
     } else{
@@ -183,11 +183,11 @@ $("#shopListRow").on('click','.btn_add',function () {
     var btnCount = $(this).prev();
      var productId = $(this).attr("productId");
         $.ajax({
-            url:"/buyer/ajax/updateAddProduct",
+            url:"/buyer/ajax/cart/addProductCount",
             type:'POST',
             data:{'productId':productId},
             success:function (result) {
-                if(100 ==result.code){
+                if(200 ==result.code){
 
                    var count = parseInt(btnCount.text())+1;
                    btnCount.empty();
@@ -207,11 +207,11 @@ $("#shopListRow").on('click','.btn_minus',function () {
     }
     var productId = $(this).attr("productId");
         $.ajax({
-            url:"/buyer/ajax/updateMinusProduct",
+            url:"/buyer/ajax/cart/minusProductCount",
             type:'POST',
             data:{'productId':productId},
             success:function (result) {
-                if(100 ==result.code){
+                if(200 ==result.code){
 
                     var count = parseInt(btnCount.text()) -1;
                     btnCount.empty();
@@ -230,12 +230,12 @@ $("#shopListRow").on('click','.btn_collectProduct',function () {
     var thisBtn = $(this);
     var productId = thisBtn.attr("productId");
     $.ajax({
-        url:"/buyer/ajax/addFavoriteProduct",
+        url:"/buyer/ajax/favoriteProduct/add",
         type:'POST',
         data:{'productId':productId},
         success:function (result) {
             //判断当收藏成功时切换取消收藏按钮
-            if (100 == result.code) {
+            if (200 == result.code) {
                 //这里必须在ajax的回掉函数外面就用变量thisBtn代替$(this),否则实现不了功能;
                 thisBtn.removeClass("btn_collectProduct").addClass("btn_cancelCollectProduct");
                 thisBtn.empty();
@@ -256,12 +256,12 @@ $("#shopListRow").on('click','.btn_cancelCollectProduct',function () {
     var thisBtn = $(this);
     var productId = thisBtn.attr("productId");
     $.ajax({
-        url:"/buyer/ajax/removeFavoriteProduct",
+        url:"/buyer/ajax/favoriteProduct/delete",
         type:'POST',
         data:{'productId':productId},
         success:function (result) {
             //判断当收藏成功时切换取消收藏按钮
-            if (100 == result.code) {
+            if (200 == result.code) {
                 //这里必须在ajax的回掉函数外面就用变量thisBtn代替$(this),否则实现不了功能;
                 thisBtn.removeClass("btn_cancelCollectProduct").addClass("btn_collectProduct");
                 thisBtn.empty();
@@ -422,12 +422,12 @@ $(document).on("click","#button_delete_batch",function(){
     productIds = productIds.substring(0,products.length-1);
     if(confirm("确定要删除选中的 : "+ products+" 商品吗?")){
         $.ajax({
-            url:"/buyer/ajax/removeProductFromCartBatch",
+            url:"/buyer/ajax/cart/removeProductBatch",
             type:"POST",
             data:{"productIds":productIds},
             success:function(result){
                 alert(result.msg);
-                to_page("/buyer/ajax/getCartList",currentPage);
+                to_page("/buyer/ajax/cart/all",currentPage);
             }
         });
     }

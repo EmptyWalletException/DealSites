@@ -25,7 +25,7 @@ $("#submit_EditShop").click(function(){
     formData.append("test","test");
 
     $.ajax({
-        url:"/updateShop",
+        url:"/seller/ajax/shop/update",
         type:"POST",
         data:formData,
         async: false,
@@ -34,7 +34,7 @@ $("#submit_EditShop").click(function(){
         cache:false,
         success:function(result){
             /* 这里要检查一下后端是否返回了错误报告信息 */
-            if(100 == result.code){
+            if(200 == result.code){
                 alert(result.msg);
             }else{
                 alert(result.msg);

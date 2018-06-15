@@ -23,10 +23,18 @@ public class FavoriteProductServiceImpl implements com.kingguanzhang.dealsites.s
      */
     @Override
     public Integer addFavoriteProduct(Integer productId, Integer userId) {
+        if (null == userId || null == productId ){
+            throw new RuntimeException("未能获取到用户Id或商品Id");
+        }
         FavoriteProduct favoriteProduct = new FavoriteProduct();
         favoriteProduct.setProductId(productId);
         favoriteProduct.setPersoninfoId(userId);
-        int i = favoriteProductMapper.insertSelective(favoriteProduct);
+        int i=0;
+        try{
+            i = favoriteProductMapper.insertSelective(favoriteProduct);
+        }catch (Exception e){
+            throw new RuntimeException("收藏商品失败");
+        }
         return i;
     }
 
@@ -38,9 +46,17 @@ public class FavoriteProductServiceImpl implements com.kingguanzhang.dealsites.s
      */
     @Override
     public Integer removeFavoriteProduct(Integer productId, Integer userId) {
+        if (null == userId || null == productId ){
+            throw new RuntimeException("未能获取到用户Id或商品Id");
+        }
         FavoriteProductExample favoriteProductExample = new FavoriteProductExample();
         favoriteProductExample.createCriteria().andProductIdEqualTo(productId).andPersoninfoIdEqualTo(userId);
-        int i = favoriteProductMapper.deleteByExample(favoriteProductExample);
+        int i = 0;
+        try{
+            i = favoriteProductMapper.deleteByExample(favoriteProductExample);
+        }catch (Exception e){
+            throw new RuntimeException("取消收藏失败");
+        }
         return i;
     }
 
@@ -51,6 +67,9 @@ public class FavoriteProductServiceImpl implements com.kingguanzhang.dealsites.s
      */
     @Override
     public List<FavoriteProduct> getFavoriteProductList(Integer personInfoId) {
+        if (null == personInfoId ){
+            throw new RuntimeException("未能获取到用户Id");
+        }
         FavoriteProductExample favoriteProductExample = new FavoriteProductExample();
         favoriteProductExample.createCriteria().andPersoninfoIdEqualTo(personInfoId);
         List<FavoriteProduct> favoriteProductList = favoriteProductMapper.selectByExample(favoriteProductExample);
@@ -59,12 +78,15 @@ public class FavoriteProductServiceImpl implements com.kingguanzhang.dealsites.s
 
     /**
      * 在数据库查询此商品是否已经存在;
-     * @param personInfo
+     * @param productId
      * @param productId
      * @return
      */
     @Override
     public Integer getFavoriteProduct(Integer personInfoId, Integer productId) {
+        if (null == personInfoId || null == productId ){
+            throw new RuntimeException("未能获取到用户Id或商品Id");
+        }
         FavoriteProductExample favoriteProductExample = new FavoriteProductExample();
         favoriteProductExample.createCriteria().andPersoninfoIdEqualTo(personInfoId).andProductIdEqualTo(productId);
         List<FavoriteProduct> favoriteProductList = favoriteProductMapper.selectByExample(favoriteProductExample);

@@ -9,12 +9,12 @@
 /*获取商品分类信息*/
 function getProductCategoryList(){
     $.ajax({
-        url:"/ajax/productCategory",
+        url:"/admin/ajax/productCategory/all",
         type:"get",
         success:function(result){
 
             /* 这里要检查一下后端是否返回了错误报告信息 */
-            if(100 == result.code){
+            if(200 == result.code){
                 var productCategoryList = result.extend.productCategoryList;
                 $("#tbody4productCategoryList").empty();
                 $.each(productCategoryList,function (index,productCategory) {
@@ -59,6 +59,7 @@ function getProductCategoryList(){
     });
 }
 
+//给编辑分类按钮绑定点击事件
 $("#tbody4productCategoryList").on('click','.editPC',function () {
     var inputNameGroup = $(this).parents().prevAll('.nameTd4Edit').children('div').children('div');
     inputNameGroup.children('input').removeAttr('disabled');
@@ -73,12 +74,34 @@ $("#tbody4productCategoryList").on('click','.editPC',function () {
     $(this).attr("disabled",true);
 });
 
+
+//抽取出来的数字层级输入框校验;
+function checkInputInt(inputInt) {
+    var regInt = /(^[0-9-]{1,5}$)/;
+    if(!regInt.test(inputInt)){
+        alert('请输入1到5位的数字!');
+        return false;
+    }
+}
+
+//抽取出来的文字名字输入框校验;
+function checkInputStr(inputStr) {
+    var regStr = /(^[a-z0-9_-]{2,10}$)|(^[\u2E80-\u9FFF]{1,10})/;//昵称正则
+    if(!regStr.test(inputStr)){
+        alert('请输入1到10位的分类名字!');
+        return false;
+    }
+}
+
 /*点击增加商品按钮后的行为*/
 $("#addProductCategroy").click(function () {
     var name = $("#tempProductCateGoryName").val();
     var priority = $("#tempPriority").val();
+    //校验两个输入框;
+    checkInputStr(name);
+    checkInputInt(priority);
     $.ajax({
-        url:"/ajax/addProductCategory",
+        url:"/admin/ajax/productCategory/add",
         type:"POST",
         data:{'productCategoryName':name,'priority':priority},
         success:function(result){
@@ -94,11 +117,14 @@ $("#tbody4productCategoryList").on('click','.confirmEdit',function () {
     var productCategoryId = $(this).attr("productCategoryId");
     var productCategoryName =$(this).parents().prevAll(".nameTd4Edit").children('div').children('div').children('input').val();
     var productCategoryLevel =$(this).parents().prevAll(".levelTd4Edit").children('div').children('div').children('input').val();
+    //校验两个输入框;
+    checkInputStr(productCategoryName);
+    checkInputInt(productCategoryLevel);
     //点击提交按钮后将它改造成"删除"按钮;然后恢复"编辑"按钮;
     $(this).parents().children(".confirmEdit").removeClass("confirmEdit btn-primary").addClass("deletePC btn-danger").text("删除");
    // $(this).parents().children(".editPC").attr("disabled",false);
     $.ajax({
-        url:"/ajax/editProductCategory",
+        url:"/admin/ajax/productCategory/update",
         type:"POST",
         data:{'productCategoryId':productCategoryId,'productCategoryName':productCategoryName,'productCategoryLevel':productCategoryLevel},
         success:function(result){
@@ -108,10 +134,11 @@ $("#tbody4productCategoryList").on('click','.confirmEdit',function () {
     });
 })
 
+//删除分类;
 $("#tbody4productCategoryList").on('click','.deletePC',function () {
     var productCategoryId = $(this).attr('productCategoryId');
     $.ajax({
-        url:"/ajax/deleteProductCategory",
+        url:"/admin/ajax/productCategory/delete",
         type:"POST",
         data:{productCategoryId:productCategoryId},
         success:function(result){

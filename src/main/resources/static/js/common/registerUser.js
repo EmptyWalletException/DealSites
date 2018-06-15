@@ -34,7 +34,7 @@ $("#submit_RegisterUser").click(function(){
     formData.append("personInfo",JSON.stringify(personInfo));
 
     $.ajax({
-        url:"/register/registerUser",
+        url:"/common/ajax/registerUser",
         type:"POST",
         data:formData,
         async: false,
@@ -167,11 +167,11 @@ function checkUsernameInput(usernameEle,ajaxEle) {
 function ajaxCheckUsernameInput(usernameEle,ajaxEle){
     var inputValue = $(usernameEle).val();
     $.ajax({
-        url:"/register/checkUsername",
+        url:"/common/ajax/localAuth/checkUsername",
         data:"inputValue="+inputValue,
         type:"POST",
         success:function(result){
-            if(100 == result.code){
+            if(200 == result.code){
                 showValidateInfo("#username","ok",result.msg);
                 //在按钮上添加一个信息,用于判断是否通过校验,从而决定能否提交表单;
                 $(ajaxEle).attr("ajaxCheckUsername","success");
@@ -216,11 +216,11 @@ function checkPetnameInput(petnameEle,ajaxEle) {
 function ajaxCheckPetnameInput(petnameEle,ajaxEle){
     var inputValue = $(petnameEle).val();
     $.ajax({
-        url:"/register/checkPetname",
+        url:"/common/ajax/personInfo/checkName",
         data:"inputValue="+inputValue,
         type:"POST",
         success:function(result){
-            if(100 == result.code){
+            if(200 == result.code){
                 showValidateInfo(petnameEle,"ok",result.msg);
                 $(ajaxEle).attr("ajaxCheckPetname","success");
             }else{

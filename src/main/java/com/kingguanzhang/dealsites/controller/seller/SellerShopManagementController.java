@@ -3,33 +3,92 @@ package com.kingguanzhang.dealsites.controller.seller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kingguanzhang.dealsites.dto.Msg;
+import com.kingguanzhang.dealsites.pojo.Area;
 import com.kingguanzhang.dealsites.pojo.PersonInfo;
 import com.kingguanzhang.dealsites.pojo.Shop;
+import com.kingguanzhang.dealsites.service.AreaService;
 import com.kingguanzhang.dealsites.service.FavoriteShopService;
 import com.kingguanzhang.dealsites.service.ShopService;
 import com.kingguanzhang.dealsites.util.RequestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.MultipartRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.List;
 
+@RequestMapping("/seller")
 @Controller
-public class ShopManagementController {
+public class SellerShopManagementController {
 
     @Autowired
     private ShopService shopService;
     @Autowired
     private FavoriteShopService favoriteShopService;
+    @Autowired
+    private AreaService areaService;
+
+    /**
+     * 跳转到注册店铺页面
+     * @return
+     */
+    @RequestMapping("/registerShop/registerShopPage")
+    public String showRegister(HttpServletRequest request) {
+        //判断用户如果已经有了店铺则返回到店铺管理页,如果没有就跳转到店铺注册页面;
+        if (null != request.getSession().getAttribute("shopId")){
+            return "seller/shopManagement";
+        }
+            return "seller/registerShop";
+    }
 
 
-    @RequestMapping(value = "/getShop",method = RequestMethod.GET)//这里的shopId需要修改成通过session中用户id来查询绑定的商店id
+    /**
+     * 跳转到卖家店铺管理,需要在此时就在session中写入shopId,后期会改到登录时写入;
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/shop/shopManagementPage",method = RequestMethod.GET)
+    public String showShopManagement( HttpServletRequest request){
+        //在首页时就已经在session中写入了personInfo;
+        PersonInfo personInfo = (PersonInfo) request.getSession().getAttribute("personInfo");
+        //通过用户Id得到店铺;
+        Shop shop = shopService.getShopByUserId(personInfo.getUserId());
+        request.getSession().setAttribute("shopId",shop.getShopId());
+        return "seller/shopManagement";
+    }
+
+    /**
+     * 跳转到编辑店铺页面
+     * @param request
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/shop/editShopPage",method = RequestMethod.GET)
+    public String showEditShop(HttpServletRequest request, Model model){
+        Integer shopId = (Integer) request.getSession().getAttribute("shopId");
+        Shop shop = shopService.getShop(shopId);
+        List<Area> areaList = areaService.getAreas();
+        model.addAttribute("shop",shop);
+        model.addAttribute("areaList",areaList);
+        return "seller/editShop";
+    }
+
+
+    /**
+     * ajax 获取店铺详情;
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/ajax/shop/get",method = RequestMethod.GET)//这里的shopId需要修改成通过session中用户id来查询绑定的商店id
     @ResponseBody
     public Msg getShop(HttpServletRequest request){
 
@@ -53,11 +112,11 @@ public class ShopManagementController {
     }
 
     /**
-     * 更新店铺;
+     * ajax更新店铺;
      * @param request
      * @return
      */
-    @RequestMapping(value = "/updateShop",method = RequestMethod.POST)
+    @RequestMapping(value = "/ajax/shop/update",method = RequestMethod.POST)
     @ResponseBody
     public Msg updateShop(HttpServletRequest request) {
 
@@ -81,14 +140,7 @@ public class ShopManagementController {
         }
 
         //从request中解析出上传的文件图片;
-        CommonsMultipartFile shopImg = null;
-        CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
-        if (commonsMultipartResolver.isMultipart(request)) {
-            MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest) request;
-            shopImg = (CommonsMultipartFile) multipartHttpServletRequest.getFile("shopImg");
-        } else {
-            return Msg.fail().setMsg("图片文件解析失败");
-        }
+        MultipartFile shopImg = ((MultipartRequest) request).getFile("shopImg");
 
         if (null != shopImg){
             //使用文件.getOriginalFilename可以获取带后缀.jpg的全名;或者文件.getItem.getName也可以获取带后缀的文件名;否则只能取到不带后缀的文件名;
@@ -114,7 +166,7 @@ public class ShopManagementController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/addShop",method = RequestMethod.POST)
+    @RequestMapping(value = "/ajax/shop/add",method = RequestMethod.POST)
     @ResponseBody
     private Msg registerShop(HttpServletRequest request) {
 
@@ -133,14 +185,7 @@ public class ShopManagementController {
         }
 
         //从request中解析出上传的文件图片;
-        CommonsMultipartFile shopImg = null;
-        CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
-        if (commonsMultipartResolver.isMultipart(request)) {
-            MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest) request;
-            shopImg = (CommonsMultipartFile) multipartHttpServletRequest.getFile("shopImg");
-        } else {
-            return Msg.fail().setMsg("解析图片出错了!");
-        }
+        MultipartFile shopImg = ((MultipartRequest) request).getFile("shopImg");
 
         //注册店铺,尽可能的减少从前端获取的值;
         if (null != shop && null != shopImg) {

@@ -1,5 +1,12 @@
 使用springBoot搭建的交易平台,将上次做的SSM框架的交易平台项目改造成springBoot框架,并且整合更多的组件;
 
+2018/6/15
+
+1:解决了图片上传时的一个异常:StandardMultipartFile不能转换为CommonsMultipartFile,原因是springboot已经自带commonFileUpload工具组件,同时springboot里的multipartFile工具类可完全替代commonMultipartFile,并且不能互转,解决方式是移除掉commonMultipartFile,使用springBoot的multipartFile效率更高;
+
+2:重新整理了一下项目的代码规范性,重点规范了前后端的url;
+
+3:service层和Controller层完善了异常捕获;目前前端还有部分输入框需要校验,后端校验也需要完善
 2018/6/14
 
 1:数据库新增商品收藏和店铺收藏两张表,与用户信息&商品&店铺这三张表关联;
@@ -35,4 +42,3 @@
 
 3:大量js代码可以被模板引擎替代,同时相应的后台代码也需要修改成非json的方式
 
-4:计划改用REST风格的url;

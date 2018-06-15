@@ -7,7 +7,7 @@
 var maxPage;
 var currentPage;
 $(function(){
-    to_page("/getProductList",1);
+    to_page("/seller/ajax/product/allByShopId",1);
     changeBatchDeleteButton();
 })
 
@@ -47,7 +47,7 @@ function build_product_table(result){
                     $("#shopListRow").append(
                         "<div class=\"col-lg-3 col-md-6 col-sm-6\">" +
                             "<div class=\"card mb-4 box-shadow\">" +
-                                "<img class=\"card-img-top\" src=\"" +product.imgAddr +"\" alt=\"商品图片\">" +
+                                "<img class=\"card-img-top\" src=\"../../" +product.imgAddr +"\" alt=\"商品图片\">" +
                             "<div class=\"card-body\">" +
 
                                 "<h1>" +product.productName + "</h1>" +
@@ -69,7 +69,7 @@ function build_product_table(result){
                                 "<p class=\"card-text\">" +product.productDesc + "</p>" +
                                 "<div class=\"\">" +
                                     "<div class=\"btn-group\">" +
-                                        "<a type=\"button\" class=\"btn btn-sm btn-outline-secondary edit btn_edit\"  href=\"/seller/showEditProduct/"+product.productId+"\">编辑</a>" +
+                                        "<a type=\"button\" class=\"btn btn-sm btn-outline-secondary edit btn_edit\"  href=\"/seller/product/editProductPage/"+product.productId+"\">编辑</a>" +
                                         "<button type=\"button\" class=\"btn btn-sm btn-outline-secondary btn_switchStatus\"  productId='"+product.productId+"'>"+(product.enableStatus == 0?'下架':'上架')+"</button>" +
                                         "<button type=\"button\" class=\"btn btn-sm btn-outline-secondary btn_removeProduct\"  productId='"+product.productId+"'>删除</button>" +
                                     "</div>" +
@@ -94,7 +94,7 @@ $("#shopListRow").on('click','.btn_switchStatus',function () {
         var confirmRemove = confirm("确认要下架商品:"+productName+"?");
         if (true == confirmRemove){
             $.ajax({
-                url:"/unShelveProduct",
+                url:"/seller/ajax/product/soldOut",
                 type:'POST',
                 data:{'productId':productId},
                 success:function (result) {
@@ -109,7 +109,7 @@ $("#shopListRow").on('click','.btn_switchStatus',function () {
         var confirmRemove = confirm("确认要上架商品:"+productName+"?");
         if (true == confirmRemove){
             $.ajax({
-                url:"/shelveProduct",
+                url:"/seller/ajax/product/putAway",
                 type:'POST',
                 data:{'productId':productId},
                 success:function (result) {
@@ -131,7 +131,7 @@ $("#shopListRow").on('click','.btn_removeProduct',function () {
     var productId = $(this).attr("productId");
     if (true == confirmRemove){
         $.ajax({
-            url:"/removeProduct",
+            url:"/seller/ajax/product/delete",
             type:'POST',
             data:{'productId':productId},
             success:function (result) {
@@ -150,25 +150,25 @@ $("#shopListRow").on('click','.btn_removeProduct',function () {
 function checkStateChoose(pn){
     var checkedInput = $("input:checked").attr("id");
     if ("shelveProduct" == checkedInput){
-        to_page("/getShelveProduct",pn);
+        to_page("/seller/ajax/product/allOnSalesByShopId",pn);
     } else if ("unShelveProduct" == checkedInput){
-        to_page("/getUnShelveProduct",pn);
+        to_page("/seller/ajax/product/allHaltSalesByShopId",pn);
     } else {
-        to_page("/getProductList",pn);
+        to_page("/seller/ajax/product/allByShopId",pn);
     }
 }
 
 //页面上的三个筛选商品状态的选择按钮
 $("#allProduct").click(function () {
-    to_page("/getProductList",1);
+    to_page("/seller/ajax/product/allByShopId",1);
 })
 
 $("#shelveProduct").click(function () {
-    to_page("/getShelveProduct",1);
+    to_page("/seller/ajax/product/allOnSalesByShopId",1);
 })
 
 $("#unShelveProduct").click(function () {
-    to_page("/getUnShelveProduct",1);
+    to_page("/seller/ajax/product/allHaltSalesByShopId",1);
 })
 
 
@@ -321,7 +321,7 @@ $(document).on("click","#button_delete_batch",function(){
     productIds = productIds.substring(0,products.length-1);
     if(confirm("确定要删除选中的 : "+ products+" 商品吗?")){
         $.ajax({
-            url:"/deleteProducts",
+            url:"/seller/ajax/product/deleteBatch",
             type:"POST",
             data:{"productIds":productIds},
             success:function(result){
@@ -345,7 +345,7 @@ $(document).on("click","#btn_putaway_batch",function(){
     productIds = productIds.substring(0,products.length-1);
     if(confirm("确定要上架选中的 : "+ products+" 商品吗?")){
         $.ajax({
-            url:"/putawayProducts",
+            url:"/seller/ajax/product/putAwayBatch",
             type:"POST",
             data:{"productIds":productIds},
             success:function(result){
@@ -369,7 +369,7 @@ $(document).on("click","#btn_soldout_batch",function(){
     productIds = productIds.substring(0,products.length-1);
     if(confirm("确定要下架选中的 : "+ products+" 商品吗?")){
         $.ajax({
-            url:"/soldoutProducts",
+            url:"/seller/ajax/product/soleOutBatch",
             type:"POST",
             data:{"productIds":productIds},
             success:function(result){

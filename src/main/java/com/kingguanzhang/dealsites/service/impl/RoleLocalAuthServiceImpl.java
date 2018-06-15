@@ -15,8 +15,14 @@ public class RoleLocalAuthServiceImpl implements RoleLocalauthService {
 
     @Override
     public int addRoleLocalauth(RoleLocalauth roleLocalauth) {
-        int i = roleLocalauthMapper.insertSelective(roleLocalauth);
-        if (0 > i){
+        if (null ==  roleLocalauth ){
+            throw new RuntimeException("未能获取到账号信息");
+        }
+        int i=0;
+        try{
+          i = roleLocalauthMapper.insertSelective(roleLocalauth);
+
+        }catch (Exception e){
             throw new RuntimeException("账号授权失败");
         }
         return i;

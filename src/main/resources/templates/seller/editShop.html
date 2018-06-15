@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="../../../../favicon.ico">
+    <link rel="icon" href="">
 
     <title>编辑店铺</title>
 
@@ -39,7 +39,7 @@
 
                     <div class="needs-validation" id="registerShopForm"  novalidate>
                         <div >
-                            <img  class="card-img" src="" alt="店铺主页图片" th:src="${shop.shopImg}" id="shopImg">
+                            <img  class="card-img" src="" alt="店铺主页图片" th:src="'../../'+${shop.shopImg}" id="shopImg">
                         </div>
                         <br/>
                         <div class="mb-3">

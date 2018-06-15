@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * 用于security加载用户角色权限的service;
+ */
 @Service
 public class CustomUserServiceImpl implements UserDetailsService {
 
@@ -29,6 +32,9 @@ public class CustomUserServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        if (null == username || "" == username.trim() ){
+            throw new RuntimeException("未能获取到账号");
+        }
 
         //通过传入的username获取数据库中查出后封装的本地账号(就是页面上的登录名和密码)所在的实体类;
         LocalAuthExample localAuthExample = new LocalAuthExample();

@@ -10,7 +10,7 @@ public interface ProductCategoryService {
 
     Integer addProductCategroy(ProductCategory productCategory);
 
-    Integer editProductCategroy(ProductCategory productCategory);
+    Integer updateProductCategory(ProductCategory productCategory);
 
     Integer deleteProductCategroy(Integer id);
 }

@@ -7,7 +7,7 @@
 var maxPage;
 var currentPage;
 $(function(){
-    to_page("/ajax/admin/getAllShop",1);
+    to_page("/admin/ajax/shop/all",1);
 })
 
 
@@ -42,7 +42,7 @@ function build_product_table(result){
                     $("#shopListRow").append(
                         "<div class=\"col-lg-3 col-md-6 col-sm-6\">" +
                             "<div class=\"card mb-4 box-shadow\">" +
-                                "<img class=\"card-img-top\" src=\"../" +shop.shopImg +"\" alt=\"店铺名称\">" +
+                                "<img class=\"card-img-top\" src=\"../../../" +shop.shopImg +"\" alt=\"店铺名称\">" +
                             "<div class=\"card-body\">" +
 
                                 "<h1>" +shop.shopName + "</h1>" +
@@ -65,8 +65,8 @@ function build_product_table(result){
                                 "<p class=\"card-text\">" +shop.shopDesc + "</p>" +
                                 "<div class=\"\">" +
                                     "<div class=\"btn-group\">" +
-                                        "<a type=\"button\" class=\"btn btn-sm btn-outline-secondary btn_shopDetails\"  href='/common/shopDetails/"+shop.shopId+"'>详情</a>" +
-                                        "<a type=\"button\" class=\"btn btn-sm btn-outline-secondary edit btn_edit\"  href=\"/admin/showEditShop/"+shop.shopId+"\""+"\">编辑</a>" +
+                                        "<a type=\"button\" class=\"btn btn-sm btn-outline-secondary btn_shopDetails\"  href='/common/shop/shopDetailsPage/"+shop.shopId+"'>详情</a>" +
+                                        "<a type=\"button\" class=\"btn btn-sm btn-outline-secondary edit btn_edit\"  href=\"/admin/shop/EditPage/"+shop.shopId+"\""+"\">编辑</a>" +
                                     "</div>" +
                                 "</div>" +
                             "</div>"+

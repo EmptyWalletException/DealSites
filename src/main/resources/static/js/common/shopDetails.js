@@ -7,14 +7,14 @@
 var maxPage;
 var currentPage;
 $(function(){
-    build_shopDetails("/getShop");
-    build_shopCategory("/ajax/productCategory");
-    to_page("/getShelveProduct",1,1);
+    build_shopDetails("/common/ajax/shop/get");
+    build_shopCategory("/common/ajax/productCategory/all");
+    to_page("/common/ajax/product/allOnSalesByShopId",1,1);
 })
 
 //点击链接"所有商品时,清除筛选的分类商品,获取所有上架中商品,相当于刷新了店铺最初的状态"
 $("#allProducts").click(function () {
-    to_page("/getShelveProduct",1,1);
+    to_page("/common/ajax/product/allOnSalesByShopId",1,1);
     return false;
 });
 
@@ -60,7 +60,7 @@ function build_shopDetails(url) {
         type:"get",
         success:function (result) {
             var shop = result.extend.shop;
-            $("#shopImg").attr("src","../../"+shop.shopImg);
+            $("#shopImg").attr("src","../../../"+shop.shopImg);
             $("#owner").text("店铺主人:"+shop.personInfo.name);
             $("#shopName").text(shop.shopName);
             $("#shopDesc").text("店铺简介:"+shop.shopDesc);
@@ -89,12 +89,12 @@ $("#shopDetailsDiv").on('click','.btn_collectShop',function () {
     var thisBtn = $(this);
     var shopId = thisBtn.attr("shopId");
     $.ajax({
-        url:"/buyer/ajax/addFavoriteShop",
+        url:"/buyer/ajax/favoriteShop/add",
         type:'POST',
         data:{'shopId':shopId},
         success:function (result) {
             //判断当收藏成功时切换取消收藏按钮
-            if (100 == result.code) {
+            if (200 == result.code) {
                 //这里必须在ajax的回掉函数外面就用变量thisBtn代替$(this),否则实现不了功能;
                 thisBtn.removeClass("btn_collectShop").addClass("btn_cancelCollectShop");
                 thisBtn.empty();
@@ -115,12 +115,12 @@ $("#shopDetailsDiv").on('click','.btn_cancelCollectShop',function () {
     var thisBtn = $(this);
     var shopId = thisBtn.attr("shopId");
     $.ajax({
-        url:"/buyer/ajax/removeFavoriteShop",
+        url:"/buyer/ajax/favoriteShop/delete",
         type:'POST',
         data:{'shopId':shopId},
         success:function (result) {
             //判断当收藏成功时切换取消收藏按钮
-            if (100 == result.code) {
+            if (200 == result.code) {
                 //这里必须在ajax的回掉函数外面就用变量thisBtn代替$(this),否则实现不了功能;
                 thisBtn.removeClass("btn_cancelCollectShop").addClass("btn_collectShop");
                 thisBtn.empty();
@@ -135,11 +135,11 @@ $("#shopDetailsDiv").on('click','.btn_cancelCollectShop',function () {
 
 
 
-/*页面上分类栏里的分类点击后的事件,由于链接是后生成的,所有要交给原本就存在的上级去绑定*/
+/*页面上分类栏里的分类点击后的事件,由于链接是后生成的,所以要交给原本就存在的上级去绑定*/
 $("#shopCategoryList").on('click','.shopCategory',function () {
     var categoryId = $(this).attr("categoryId");
     //这里直接使用修改后的to_page分页跳转方法;
-    to_page("/ajax/getOnSellProductListByShopIdAndCategoryId",categoryId,1);
+    to_page("/common/ajax/product/allOnSalesByShopIdAndCategoryId",categoryId,1);
     return false;
 })
 
@@ -186,7 +186,7 @@ function build_product_table(result){
             $("#shopListRow").append(
                 "<div class='col-lg-3 col-md-6 col-sm-6'>" +
                 "<div class='card mb-4 box-shadow'>" +
-                "<img class='card-img-top' src='../../" +product.imgAddr +"' alt='商品图片'>" +
+                "<img class='card-img-top' src='../../../" +product.imgAddr +"' alt='商品图片'>" +
                 "<div class='card-body'>" +
 
                 "<h4>" +product.productName + "</h4>" +
@@ -216,7 +216,7 @@ function build_product_table(result){
             $("#shopListRow").append(
                 "<div class='col-lg-3 col-md-6 col-sm-6'>" +
                 "<div class='card mb-4 box-shadow'>" +
-                "<img class='card-img-top' src='../../" +product.imgAddr +"' alt='商品图片'>" +
+                "<img class='card-img-top' src='../../../" +product.imgAddr +"' alt='商品图片'>" +
                 "<div class='card-body'>" +
 
                 "<h4>" +product.productName + "</h4>" +
@@ -257,7 +257,7 @@ $("#shopListRow").on('click','.btn_addToCart',function () {
     }
     var productId = $(this).attr("productId");
     $.ajax({
-        url:"/buyer/ajax/addProductToCart",
+        url:"/buyer/ajax/cart/addProduct",
         type:'POST',
         data:{'productId':productId},
         success:function (result) {
@@ -275,12 +275,12 @@ $("#shopListRow").on('click','.btn_collectProduct',function () {
     var thisBtn = $(this);
     var productId = thisBtn.attr("productId");
     $.ajax({
-        url:"/buyer/ajax/addFavoriteProduct",
+        url:"/buyer/ajax/favoriteProduct/add",
         type:'POST',
         data:{'productId':productId},
         success:function (result) {
             //判断当收藏成功时切换取消收藏按钮
-            if (100 == result.code) {
+            if (200 == result.code) {
                 //这里必须在ajax的回掉函数外面就用变量thisBtn代替$(this),否则实现不了功能;
                 thisBtn.removeClass("btn_collectProduct").addClass("btn_cancelCollectProduct");
                 thisBtn.empty();
@@ -301,12 +301,12 @@ $("#shopListRow").on('click','.btn_cancelCollectProduct',function () {
     var thisBtn = $(this);
     var productId = thisBtn.attr("productId");
     $.ajax({
-        url:"/buyer/ajax/removeFavoriteProduct",
+        url:"/buyer/ajax/favoriteProduct/delete",
         type:'POST',
         data:{'productId':productId},
         success:function (result) {
             //判断当收藏成功时切换取消收藏按钮
-            if (100 == result.code) {
+            if (200 == result.code) {
                 //这里必须在ajax的回掉函数外面就用变量thisBtn代替$(this),否则实现不了功能;
                 thisBtn.removeClass("btn_cancelCollectProduct").addClass("btn_collectProduct");
                 thisBtn.empty();

@@ -3,8 +3,8 @@
 var maxPage;
 var currentPage;
 $(function(){
-    build_shopCategory("/ajax/productCategory");
-    to_page("/index/getAllOnSellProductList",1,1);
+    build_shopCategory("/common/ajax/productCategory/all");
+    to_page("/common/ajax/product/allOnSales",1,1);
 
 })
 
@@ -51,7 +51,7 @@ function build_shopCategory(url) {
 $("#shopCategoryList").on('click','.shopCategory',function () {
     var categoryId = $(this).attr("categoryId");
     //这里直接使用修改后的to_page分页跳转方法;
-    to_page("/ajax/getOnSellProductListByCategoryId",categoryId,1);
+    to_page("/common/ajax/product/allOnSalesByCategoryId",categoryId,1);
     return false;
 })
 
@@ -166,7 +166,7 @@ $("#shopListRow").on('click','.btn_addToCart',function () {
     }
     var productId = $(this).attr("productId");
         $.ajax({
-            url:"/buyer/ajax/addProductToCart",
+            url:"/buyer/ajax/cart/addProduct",
             type:'POST',
             data:{'productId':productId},
             success:function (result) {
@@ -184,12 +184,12 @@ $("#shopListRow").on('click','.btn_collectProduct',function () {
     var thisBtn = $(this);
     var productId = thisBtn.attr("productId");
     $.ajax({
-        url:"/buyer/ajax/addFavoriteProduct",
+        url:"/buyer/ajax/favoriteProduct/add",
         type:'POST',
         data:{'productId':productId},
         success:function (result) {
             //判断当收藏成功时切换取消收藏按钮
-            if (100 == result.code) {
+            if (200 == result.code) {
                 //这里必须在ajax的回掉函数外面就用变量thisBtn代替$(this),否则实现不了功能;
                 thisBtn.removeClass("btn_collectProduct").addClass("btn_cancelCollectProduct");
                 thisBtn.empty();
@@ -210,12 +210,12 @@ $("#shopListRow").on('click','.btn_cancelCollectProduct',function () {
     var thisBtn = $(this);
     var productId = thisBtn.attr("productId");
     $.ajax({
-        url:"/buyer/ajax/removeFavoriteProduct",
+        url:"/buyer/ajax/favoriteProduct/delete",
         type:'POST',
         data:{'productId':productId},
         success:function (result) {
             //判断当收藏成功时切换取消收藏按钮
-            if (100 == result.code) {
+            if (200 == result.code) {
                 //这里必须在ajax的回掉函数外面就用变量thisBtn代替$(this),否则实现不了功能;
                 thisBtn.removeClass("btn_cancelCollectProduct").addClass("btn_collectProduct");
                 thisBtn.empty();

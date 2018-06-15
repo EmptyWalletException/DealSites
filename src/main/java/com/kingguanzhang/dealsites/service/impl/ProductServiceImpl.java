@@ -28,6 +28,9 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public List<Product> getProductList(Integer shopId) {
+        if (null == shopId){
+            throw new RuntimeException("未能获取到店铺Id");
+        }
         ProductExample productExample = new ProductExample();
         ProductExample.Criteria criteria = productExample.createCriteria();
         criteria.andShopIdEqualTo(shopId);
@@ -37,6 +40,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product getProduct(Integer productId) {
+        if (null == productId){
+            throw new RuntimeException("未能获取到商品Id");
+        }
         Product product = productMapper.selectByPrimaryKey(productId);
         return product;
     }
@@ -125,11 +131,12 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public List<Product> getOnSellProductListByCategoryId(Integer categoryId,Integer shopId) {
+        if (null == categoryId || null == shopId ){
+            throw new RuntimeException("未能获取到分类Id或店铺Id");
+        }
         ProductExample productExample = new ProductExample();
         ProductExample.Criteria criteria = productExample.createCriteria();
-        if (null != shopId){
-            criteria.andShopIdEqualTo(shopId);
-        }
+        criteria.andShopIdEqualTo(shopId);
         criteria.andProductCategoryIdEqualTo(categoryId);
         criteria.andEnableStatusEqualTo(0);
         List<Product> productList = productMapper.selectByExample(productExample);
@@ -157,33 +164,80 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public int updateProduct(Product product) {
+        if (null == product  ){
+            throw new RuntimeException("未能获取到商品");
+        }
         //更新商品会进入下架状态
         product.setEnableStatus(1);
-        int i = productMapper.updateByPrimaryKeySelective(product);
+        int i=0;
+        try{
+             i = productMapper.updateByPrimaryKeySelective(product);
+        }catch (Exception e){
+            throw new RuntimeException("更新商品失败");
+        }
         return i;
     }
 
+    /**
+     * 删除商品
+     * @param productId
+     * @return
+     */
     @Override
     public Integer removeProduct(Integer productId) {
-        int i = productMapper.deleteByPrimaryKey(productId);
+        if (null == productId  ){
+            throw new RuntimeException("未能获取到商品Id");
+        }
+        int i=0;
+        try{
+             i = productMapper.deleteByPrimaryKey(productId);
+        }catch (Exception e){
+            throw new RuntimeException("删除商品失败");
+        }
         return i;
     }
 
+    /**
+     * 上架商品
+     * @param productId
+     * @return
+     */
     @Override
     public Integer shelveProduct(Integer productId) {
+        if (null == productId  ){
+            throw new RuntimeException("未能获取到商品Id");
+        }
         Product product = new Product();
         product.setProductId(productId);
         product.setEnableStatus(0);
-        int i = productMapper.updateByPrimaryKeySelective(product);
+        int i=0;
+        try{
+             i = productMapper.updateByPrimaryKeySelective(product);
+        }catch (Exception e){
+            throw new RuntimeException("上架商品失败");
+        }
         return i;
     }
 
+    /**
+     * 下架商品
+     * @param productId
+     * @return
+     */
     @Override
     public Integer unShelveProduct(Integer productId) {
+        if (null == productId  ){
+            throw new RuntimeException("未能获取到商品Id");
+        }
         Product product = new Product();
         product.setProductId(productId);
         product.setEnableStatus(1);
-        int i = productMapper.updateByPrimaryKeySelective(product);
+        int i=0;
+        try{
+            i = productMapper.updateByPrimaryKeySelective(product);
+        }catch (Exception e){
+            throw new RuntimeException("下架商品失败");
+        }
         return i;
     }
 
@@ -194,6 +248,9 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public List<Product> getShelveProductList(Integer shopId) {
+        if (null == shopId  ){
+            throw new RuntimeException("未能获取到店铺Id");
+        }
         ProductExample productExample = new ProductExample();
         ProductExample.Criteria criteria = productExample.createCriteria();
         criteria.andShopIdEqualTo(shopId);
@@ -209,6 +266,9 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public List<Product> getUnShelveProduct(Integer shopId) {
+        if (null == shopId  ){
+            throw new RuntimeException("未能获取到店铺Id");
+        }
         ProductExample productExample = new ProductExample();
         ProductExample.Criteria criteria = productExample.createCriteria();
         criteria.andShopIdEqualTo(shopId);
@@ -224,10 +284,18 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public Integer deleteProducts(List<Integer> productIdList) {
+        if (null == productIdList || 0 == productIdList.size() ){
+            throw new RuntimeException("未能获取到商品Id");
+        }
         ProductExample productExample = new ProductExample();
         ProductExample.Criteria criteria = productExample.createCriteria();
         criteria.andProductIdIn(productIdList);
-        int i = productMapper.deleteByExample(productExample);
+        int i=0;
+        try{
+            i = productMapper.deleteByExample(productExample);
+        }catch (Exception e){
+            throw new RuntimeException("批量删除失败");
+        }
         return i;
     }
 
@@ -238,12 +306,20 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public Integer putawayProducts(List<Integer> productIdList) {
+        if (null == productIdList || 0 == productIdList.size() ){
+            throw new RuntimeException("未能获取到商品Id");
+        }
         Product product = new Product();
         product.setEnableStatus(0);
         ProductExample productExample = new ProductExample();
         ProductExample.Criteria criteria = productExample.createCriteria();
         criteria.andProductIdIn(productIdList);
-        int i = productMapper.updateByExampleSelective(product,productExample);
+        int i=0;
+        try{
+            i = productMapper.updateByExampleSelective(product,productExample);
+        }catch (Exception e){
+            throw new RuntimeException("批量上架失败");
+        }
         return i;
     }
 
@@ -254,12 +330,20 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public Integer soldoutProducts(List<Integer> productIdList) {
+        if (null == productIdList || 0 == productIdList.size() ){
+            throw new RuntimeException("未能获取到商品Id");
+        }
         Product product = new Product();
         product.setEnableStatus(1);
         ProductExample productExample = new ProductExample();
         ProductExample.Criteria criteria = productExample.createCriteria();
         criteria.andProductIdIn(productIdList);
-        int i = productMapper.updateByExampleSelective(product,productExample);
+        int i=0;
+        try{
+            i = productMapper.updateByExampleSelective(product,productExample);
+        }catch (Exception e){
+            throw new RuntimeException("批量下架失败");
+        }
         return i;
     }
 

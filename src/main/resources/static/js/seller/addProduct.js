@@ -7,7 +7,7 @@
 function getProductCategory(){
     /* alert("进入js代码");*/
     $.ajax({
-        url:"/ajax/productCategory",
+        url:"/common/ajax/productCategory/all",
         type:"get",
         success:function(result){
             /*    alert("进入ajax代码");*/
@@ -23,7 +23,7 @@ function getProductCategory(){
 };
 
 
-
+//新增商品
 $("#submit_addProduct").click(function(){
     /* 检查输入框是否符合正则表达式 */
 
@@ -42,7 +42,7 @@ $("#submit_addProduct").click(function(){
     formData.append("productImg",productImg);
 
     $.ajax({
-        url:"/addProduct",
+        url:"/seller/ajax/product/add",
         type:"POST",
         data:formData,
         async: false,
@@ -51,7 +51,7 @@ $("#submit_addProduct").click(function(){
         cache:false,
         success:function(result){
             /* 这里要检查一下后端是否返回了错误报告信息 */
-            if(100 == result.code){
+            if(200 == result.code){
                 alert(result.msg);
             }else{
                 alert(result.msg);

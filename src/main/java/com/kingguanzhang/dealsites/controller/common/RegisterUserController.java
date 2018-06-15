@@ -1,4 +1,4 @@
-package com.kingguanzhang.dealsites.controller.buyer;
+package com.kingguanzhang.dealsites.controller.common;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-@RequestMapping("/register")//增加这个注解是为了防止相关url被security拦截
+@RequestMapping("/common")//增加这个注解是为了防止相关url被security拦截
 @Controller
 public class RegisterUserController {
 
@@ -34,11 +34,22 @@ public class RegisterUserController {
     private RoleLocalauthService roleLocalauthService;
 
     /**
+     * 跳转到注册用户页面
+     * @return
+     */
+    @RequestMapping("/registerUser/registerUserPage")
+    public String showRegisterUser(){
+        return "common/registerUser";
+    }
+
+
+
+    /**
      * ajax检查账号是否已经被占用
      * @param inputValue
      * @return
      */
-    @RequestMapping(value = "/checkUsername")
+    @RequestMapping(value = "/ajax/localAuth/checkUsername")
     @ResponseBody
     public Msg checkUsername(@RequestParam("inputValue") String inputValue){
         List<LocalAuth> localAuthList = localAuthService.getLocalAuthByLoginUsername(inputValue);
@@ -53,9 +64,9 @@ public class RegisterUserController {
      * @param inputValue
      * @return
      */
-    @RequestMapping(value = "/checkPetname",method = RequestMethod.POST)
+    @RequestMapping(value = "/ajax/personInfo/checkName",method = RequestMethod.POST)
     @ResponseBody
-    public Msg checkPetname(@RequestParam("inputValue") String inputValue){
+    public Msg checkName(@RequestParam("inputValue") String inputValue){
        List<PersonInfo> personInfoList = personInfoService.getByName(inputValue);
         if (0 == personInfoList.size()){
             return Msg.success().setMsg("昵称未被占用");
@@ -64,9 +75,9 @@ public class RegisterUserController {
     }
 
     /**
-     *  注册用户;
+     *  ajax注册用户;
      */
-    @RequestMapping(value = "/registerUser",method = RequestMethod.POST)
+    @RequestMapping(value = "/ajax/registerUser",method = RequestMethod.POST)
     @ResponseBody
     public Msg registerUser(HttpServletRequest request){
         LocalAuth localAuth = null;

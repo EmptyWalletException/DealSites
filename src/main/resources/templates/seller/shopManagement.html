@@ -42,7 +42,7 @@
                             <div class="card-deck mb-3 text-center">
                                 <div class="card mb-4 box-shadow">
                                     <div class="card-header">
-                                        <a type="button" class="btn btn-lg btn-block btn-primary" href="/register">注册店铺</a>
+                                        <a type="button" th:class="${session.shopId != null}?'btn btn-lg btn-block btn-primary disabled':'btn btn-lg btn-block btn-primary'" href="/seller/registerShop/registerShopPage" >注册店铺</a>
 
                                     </div>
                                     <div class="card-body">
@@ -57,7 +57,7 @@
                                 </div>
                                 <div class="card mb-4 box-shadow">
                                     <div class="card-header">
-                                        <a type="button" class="btn btn-lg btn-block btn-primary" href="/editShop">编辑店铺</a>
+                                        <a type="button" class="btn btn-lg btn-block btn-primary" href="/seller/shop/editShopPage">编辑店铺</a>
                                     </div>
                                     <div class="card-body">
                                         <p class="card-title pricing-card-title">注意事项</p>
@@ -72,7 +72,7 @@
                                 </div>
                                 <div class="card mb-4 box-shadow">
                                     <div class="card-header">
-                                        <a type="button" class="btn btn-lg btn-block btn-outline-primary" href="/see">查看店铺</a>
+                                        <a type="button" class="btn btn-lg btn-block btn-outline-primary" th:href="'/common/shop/shopDetailsPage/'+${session.shopId}" href="#">查看店铺</a>
 
                                     </div>
                                     <div class="card-body">

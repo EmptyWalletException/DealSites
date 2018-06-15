@@ -23,6 +23,9 @@ public class CartServiceImpl implements CartService {
      */
     @Override
     public List<Cart> getCartList(Integer userId) {
+        if (null == userId){
+            throw new RuntimeException("未能获取到用户Id");
+        }
         CartExample cartExample = new CartExample();
         cartExample.createCriteria().andPersonInfoIdEqualTo(userId);
         List<Cart> cartList = cartMapper.selectByExample(cartExample);
@@ -37,23 +40,39 @@ public class CartServiceImpl implements CartService {
      */
     @Override
     public Integer removeProductFromCart(Integer userId, Integer productId) {
+        if (null == userId || null == productId){
+            throw new RuntimeException("未能获取到用户Id或商品Id");
+        }
         CartExample cartExample = new CartExample();
         cartExample.createCriteria().andPersonInfoIdEqualTo(userId).andProductIdEqualTo(productId);
-        int i = cartMapper.deleteByExample(cartExample);
+        int i =0 ;
+        try{
+            i = cartMapper.deleteByExample(cartExample);
+        }catch (Exception e){
+            throw new RuntimeException("删除商品失败:"+e.getMessage());
+        }
         return i;
     }
 
     /**
      * 通过用户id和商品id集合从购物车表总移除批量商品;
      * @param userId
-     * @param productList
+     * @param productIdList
      * @return
      */
     @Override
-    public Integer removeProductFromCartBatch(Integer userId, List<Integer> productList) {
+    public Integer removeProductFromCartBatch(Integer userId, List<Integer> productIdList) {
+        if (null == userId || 0 == productIdList.size()){
+            throw new RuntimeException("未能获取到用户Id或商品Id");
+        }
         CartExample cartExample = new CartExample();
-        cartExample.createCriteria().andPersonInfoIdEqualTo(userId).andProductIdIn(productList);
-        int i = cartMapper.deleteByExample(cartExample);
+        cartExample.createCriteria().andPersonInfoIdEqualTo(userId).andProductIdIn(productIdList);
+        int i =0;
+        try{
+            i = cartMapper.deleteByExample(cartExample);
+        }catch (Exception e){
+            throw new RuntimeException("删除商品失败:"+e.getMessage());
+        }
         return i;
     }
 
@@ -65,11 +84,19 @@ public class CartServiceImpl implements CartService {
      */
     @Override
     public Integer addProductToCart(Integer userId, Integer productId) {
+        if (null == userId || null == productId){
+            throw new RuntimeException("未能获取到用户Id或商品Id");
+        }
         Cart cart = new Cart();
         cart.setPersonInfoId(userId);
         cart.setProductId(productId);
         cart.setProductCount(1);
-        int i = cartMapper.insertSelective(cart);
+        int i = 0;
+        try {
+             i= cartMapper.insertSelective(cart);
+        }catch (Exception e){
+            throw new RuntimeException("添加商品失败"+e.getMessage());
+        }
         return i;
     }
 
@@ -81,13 +108,20 @@ public class CartServiceImpl implements CartService {
      */
     @Override
     public Integer addProductToCartBatch(Integer userId, List<Integer> productIdList) {
+        if (null == userId || 0 == productIdList.size()){
+            throw new RuntimeException("未能获取到用户Id或商品Id");
+        }
         Cart cart = new Cart();
         cart.setPersonInfoId(userId);
         cart.setProductCount(1);
         int row = 0;
         for (int i = 0 ; i <= productIdList.size(); i++){
             cart.setProductId(productIdList.get(i));
-             row= cartMapper.insert(cart);
+            try {
+                row= cartMapper.insert(cart);
+            }catch (Exception e){
+                throw new RuntimeException("添加商品失败: "+e.getMessage());
+            }
         }
         return row;
     }
@@ -100,14 +134,13 @@ public class CartServiceImpl implements CartService {
      */
     @Override
     public Integer getProductItem(Integer userId, Integer productId) {
+        if (null == userId || null == productId){
+            throw new RuntimeException("未能获取到用户Id或商品Id");
+        }
         CartExample cartExample = new CartExample();
         cartExample.createCriteria().andProductIdEqualTo(productId).andPersonInfoIdEqualTo(userId);
         List<Cart> cartList = cartMapper.selectByExample(cartExample);
-        int i = 0;
-        if (0 != cartList.size()){
-            return i = 1;
-        }
-        return i;
+        return cartList.size();
     }
 
     /**
@@ -118,6 +151,9 @@ public class CartServiceImpl implements CartService {
      */
     @Override
     public Integer updateAddProductItem(Integer userId, Integer productId) {
+        if (null == userId || null == productId){
+            throw new RuntimeException("未能获取到用户Id或商品Id");
+        }
         CartExample cartExample = new CartExample();
         cartExample.createCriteria().andProductIdEqualTo(productId).andPersonInfoIdEqualTo(userId);
         List<Cart> cartList = cartMapper.selectByExample(cartExample);
@@ -131,8 +167,13 @@ public class CartServiceImpl implements CartService {
            }else {
                cart.setProductCount(productCount+1);
            }
-
-        int i = cartMapper.updateByPrimaryKeySelective(cart);
+            int i=0;
+           try{
+                i = cartMapper.updateByPrimaryKeySelective(cart);
+               
+           }catch (Exception e){
+               throw  new RuntimeException("更新商品数量失败!");
+           }
         return i;
     }
 
@@ -144,6 +185,9 @@ public class CartServiceImpl implements CartService {
      */
     @Override
     public Integer updateMinusProductItem(Integer userId, Integer productId) {
+        if (null == userId || null == productId){
+            throw new RuntimeException("未能获取到用户Id或商品Id");
+        }
         CartExample cartExample = new CartExample();
         cartExample.createCriteria().andProductIdEqualTo(productId).andPersonInfoIdEqualTo(userId);
         List<Cart> cartList = cartMapper.selectByExample(cartExample);
@@ -163,7 +207,13 @@ public class CartServiceImpl implements CartService {
             }
         }
 
-        int i = cartMapper.updateByPrimaryKeySelective(cart);
+        int i=0;
+        try{
+            i = cartMapper.updateByPrimaryKeySelective(cart);
+
+        }catch (Exception e){
+            throw  new RuntimeException("更新商品数量失败!");
+        }
         return i;
     }
 }

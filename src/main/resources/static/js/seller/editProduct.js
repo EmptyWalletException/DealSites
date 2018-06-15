@@ -23,7 +23,7 @@ $("#submit_EditProduct").click(function(){
     formData.append("productImg",productImg);
 
     $.ajax({
-        url:"/updateProduct",
+        url:"/seller/ajax/product/update",
         type:"POST",
         data:formData,
         async: false,

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 
+
 @Controller
 public class LoginController {
 
@@ -17,6 +18,21 @@ public class LoginController {
     ShopService shopService;
 
 
+    /**
+     * 跳转到登录页
+     * @return
+     */
+    @RequestMapping(value = "/login",method = RequestMethod.GET)
+    public String showLogin(){
+        return "common/login";
+    }
+
+    /**
+     * 用于测试security的登录方法,此方法在security使用默认配置时不会进入;
+     * @param username
+     * @param request
+     * @return
+     */
     @RequestMapping(value = "/login" ,method = RequestMethod.POST)
     public String  login(@RequestParam("username") String username, HttpServletRequest request){
 

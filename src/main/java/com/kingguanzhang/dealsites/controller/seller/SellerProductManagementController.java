@@ -16,7 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.MultipartRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
@@ -25,8 +27,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@RequestMapping("/seller")
 @Controller
-public class ProductManagementController {
+public class SellerProductManagementController {
 
 
     @Autowired
@@ -38,7 +41,40 @@ public class ProductManagementController {
     @Autowired
     private FavoriteProductService favoriteProductService;
 
-    @RequestMapping("/seller/showEditProduct/{productId}")
+    /**
+     * 跳转到商品管理页风格一
+     * @return
+     */
+    @RequestMapping("/product/managementPage1")
+    public String showProductManagement(){
+        return "seller/productManagement1";
+    }
+
+    /**
+     * 跳转到商品管理页风格二
+     * @return
+     */
+    @RequestMapping("/product/managementPage2")
+    public String showProductManagement2(){
+        return "seller/productManagement2";
+    }
+
+    /**
+     * 跳转到新增商品页;
+     * @return
+     */
+    @RequestMapping("/product/addProductPage")
+    public String addProduct(){
+        return "seller/addProduct";
+    }
+
+    /**
+     * 跳转到编辑商品页
+     * @param productId
+     * @param model
+     * @return
+     */
+    @RequestMapping("/product/editProductPage/{productId}")
     public String showEditProduct(@PathVariable("productId") Integer productId, Model model) {
         Product product = productService.getProduct(productId);
         model.addAttribute("product",product);
@@ -48,39 +84,15 @@ public class ProductManagementController {
     }
 
 
-    /**
-     * 在首页查询所有店铺内所有上架中的商品列表;
-     * @param
-     * @return
-     */
-    @RequestMapping(value = "/index/getAllOnSellProductList",method = RequestMethod.POST)
-    @ResponseBody
-    public Msg getAllOnSellProductList(@RequestParam(value = "pn",defaultValue = "1")Integer pn,HttpServletRequest request) {
-        //使用分页插件官方推荐的第二种方式开启分页查询;
-        PageHelper.startPage(pn, 16);
-        //然后紧跟的查询就是分页查询;
-        List<Product> productList =productService.getAllOnSellProductList();
-        //查询之后使用PageInfo来包装,方便在页面视图中处理页码,下面用的构造器第二个参数是页面底部可供点击的连续页码数;
-        PageInfo pageInfo = new PageInfo(productList,5);
-        Msg msg =Msg.success().setMsg("获取商品集合成功").add("pageInfo", pageInfo);
 
-        //查询出用户收藏的商品的Id,为了在首页的商品卡牌中判断是显示收藏还是取消收藏按钮;
-        PersonInfo personInfo = (PersonInfo) request.getSession().getAttribute("personInfo");
-        if (null != personInfo){
-            List<FavoriteProduct> favoriteProductList = favoriteProductService.getFavoriteProductList(personInfo.getUserId());
-            msg.add("favoriteProductList",favoriteProductList);
-        }
-
-        return msg;
-    }
 
      /**
-     *通过分类名获取分类下所有商品,带有分类功能;
+     *通过分类名获取分类下所有在售的商品;
      * @param categoryId
      * @param pn
      * @return
      */
-    @RequestMapping(value = "/ajax/getOnSellProductListByCategoryId",method = RequestMethod.POST)
+    @RequestMapping(value = "/ajax/product/allOnSalesByCategoryId",method = RequestMethod.POST)
     @ResponseBody
     public Msg getOnSellProductListByCategoryId(@RequestParam("categoryId") Integer categoryId, @RequestParam(value = "pn",defaultValue = "1") Integer pn,HttpServletRequest request) {
         PageHelper.startPage(pn,8);
@@ -99,12 +111,12 @@ public class ProductManagementController {
     }
 
     /**
-     *通过分类名和店铺Id获取分类下所有商品,带有分类功能;
+     *通过分类名和店铺Id获取分类下所有在售商品;
      * @param categoryId
      * @param pn
      * @return
      */
-    @RequestMapping(value = "/ajax/getOnSellProductListByShopIdAndCategoryId",method = RequestMethod.POST)
+    @RequestMapping(value = "/ajax/product/allOnSalesByShopIdAndCategoryId",method = RequestMethod.POST)
     @ResponseBody
     public Msg getOnSellProductListByShopIdAndCategoryId(@RequestParam("categoryId") Integer categoryId, @RequestParam(value = "pn",defaultValue = "1") Integer pn, HttpServletRequest request) {
        Integer shopId = (Integer) request.getSession().getAttribute("shopId");
@@ -129,7 +141,7 @@ public class ProductManagementController {
      * @param productIds
      * @return
      */
-    @RequestMapping(value = "/soldoutProducts", method = RequestMethod.POST)
+    @RequestMapping(value = "/ajax/product/soleOutBatch", method = RequestMethod.POST)
     @ResponseBody
     public Msg soldoutProducts(@RequestParam("productIds") String productIds) {
         String[] productIdArray = productIds.split(",");
@@ -137,7 +149,13 @@ public class ProductManagementController {
         for (String productId:productIdArray ) {
             productIdList.add(Integer.parseInt(productId));
         }
-        Integer i = productService.soldoutProducts(productIdList);
+        int i = 0;
+        try{
+            i = productService.soldoutProducts(productIdList);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Msg.fail().setMsg("下架商品失败");
+        }
         if (0 < i) {
             return Msg.success().setMsg("下架成功!");
         }
@@ -150,7 +168,7 @@ public class ProductManagementController {
      * @param productIds
      * @return
      */
-    @RequestMapping(value = "/putawayProducts", method = RequestMethod.POST)
+    @RequestMapping(value = "/ajax/product/putAwayBatch", method = RequestMethod.POST)
     @ResponseBody
     public Msg putawayProducts(@RequestParam("productIds") String productIds) {
         String[] productIdArray = productIds.split(",");
@@ -158,7 +176,13 @@ public class ProductManagementController {
         for (String productId:productIdArray ) {
             productIdList.add(Integer.parseInt(productId));
         }
-        Integer i = productService.putawayProducts(productIdList);
+        int i = 0;
+        try{
+             i = productService.putawayProducts(productIdList);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Msg.fail().setMsg("上架失败");
+        }
         if (0 < i) {
             return Msg.success().setMsg("上架成功!");
         }
@@ -171,7 +195,7 @@ public class ProductManagementController {
      * @param productIds
      * @return
      */
-    @RequestMapping(value = "/deleteProducts", method = RequestMethod.POST)
+    @RequestMapping(value = "/ajax/product/deleteBatch", method = RequestMethod.POST)
     @ResponseBody
     public Msg deleteProducts(@RequestParam("productIds") String productIds) {
         String[] productIdArray = productIds.split(",");
@@ -179,7 +203,13 @@ public class ProductManagementController {
         for (String productId:productIdArray ) {
                 productIdList.add(Integer.parseInt(productId));
         }
-        Integer i = productService.deleteProducts(productIdList);
+        int i = 0;
+        try{
+          i = productService.deleteProducts(productIdList);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Msg.fail().setMsg("删除失败");
+        }
         if (0 < i) {
             return Msg.success().setMsg("删除成功!");
         }
@@ -192,10 +222,16 @@ public class ProductManagementController {
      * @param productId
      * @return
      */
-    @RequestMapping(value = "/removeProduct", method = RequestMethod.POST)
+    @RequestMapping(value = "/ajax/product/delete", method = RequestMethod.POST)
     @ResponseBody
     public Msg removeProduct(@RequestParam("productId") Integer productId) {
-        Integer i = productService.removeProduct(productId);
+        int i = 0;
+        try{
+            i = productService.removeProduct(productId);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Msg.fail().setMsg("删除失败");
+        }
         if (0 < i) {
             return Msg.success().setMsg("删除成功!");
         }
@@ -208,10 +244,16 @@ public class ProductManagementController {
      * @param productId
      * @return
      */
-    @RequestMapping(value = "/shelveProduct", method = RequestMethod.POST)
+    @RequestMapping(value = "/ajax/product/putAway", method = RequestMethod.POST)
     @ResponseBody
-    public Msg shelveProduct(@RequestParam("productId") Integer productId) {
-        Integer i = productService.shelveProduct(productId);
+    public Msg putAwayProduct(@RequestParam("productId") Integer productId) {
+        int i = 0;
+        try{
+             i = productService.shelveProduct(productId);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Msg.fail().setMsg("上架失败");
+        }
         if (0 < i) {
             return Msg.success().setMsg("上架成功!");
         }
@@ -224,10 +266,16 @@ public class ProductManagementController {
      * @param productId
      * @return
      */
-    @RequestMapping(value = "/unShelveProduct", method = RequestMethod.POST)
+    @RequestMapping(value = "/ajax/product/soldOut", method = RequestMethod.POST)
     @ResponseBody
-    public Msg unShelveProduct(@RequestParam("productId") Integer productId) {
-        Integer i = productService.unShelveProduct(productId);
+    public Msg soldOutProduct(@RequestParam("productId") Integer productId) {
+        int i = 0;
+        try{
+            i = productService.unShelveProduct(productId);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Msg.fail().setMsg("下架失败");
+        }
         if (0 < i) {
             return Msg.success().setMsg("下架成功!");
         }
@@ -235,11 +283,11 @@ public class ProductManagementController {
     }
 
     /**
-     * 查询店铺内所有的商品列表;
+     * ajax查询店铺内所有的商品列表;
      * @param request
      * @return
      */
-    @RequestMapping(value = "/getProductList",method = RequestMethod.POST)
+    @RequestMapping(value = "/ajax/product/allByShopId",method = RequestMethod.POST)
     @ResponseBody
     public Msg getProductList(@RequestParam(value = "pn",defaultValue = "1")Integer pn, HttpServletRequest request) {
         Integer shopId = (Integer) request.getSession().getAttribute("shopId");//在跳转到店铺管理首页时就往session中写入shopId
@@ -253,11 +301,11 @@ public class ProductManagementController {
     }
 
     /**
-     * 查询所有上架中的商品列表;
+     * ajax查询店铺内所有上架中的商品列表;
      * @param request
      * @return
      */
-    @RequestMapping(value = "/getShelveProduct",method = RequestMethod.POST)
+    @RequestMapping(value = "/ajax/product/allOnSalesByShopId",method = RequestMethod.POST)
     @ResponseBody
     public Msg getShelveProductList(@RequestParam(value = "pn",defaultValue = "1")Integer pn, HttpServletRequest request) {
         Integer shopId = (Integer) request.getSession().getAttribute("shopId");
@@ -280,11 +328,11 @@ public class ProductManagementController {
     }
 
     /**
-     * 查询所有下架中的商品列表;
+     * ajax查询店铺内所有下架中的商品列表;
      * @param request
      * @return
      */
-    @RequestMapping(value = "/getUnShelveProduct",method = RequestMethod.POST)
+    @RequestMapping(value = "/ajax/product/allHaltSalesByShopId",method = RequestMethod.POST)
     @ResponseBody
     public Msg getUnShelveProduct(@RequestParam(value = "pn",defaultValue = "1")Integer pn, HttpServletRequest request) {
         Integer shopId = (Integer) request.getSession().getAttribute("shopId");
@@ -298,11 +346,11 @@ public class ProductManagementController {
     }
 
     /**
-     * 查询单个商品详情
+     * ajax查询单个商品详情
      * @param request
      * @return
      */
-    @RequestMapping(value = "/getProduct")
+    @RequestMapping(value = "/ajax/product/get",method = RequestMethod.GET)
     @ResponseBody
     public Msg getProduct(HttpServletRequest request) {
         //从session中获取商品Id,页面和js中也不要暴露商品id,防止用户修改id
@@ -312,12 +360,12 @@ public class ProductManagementController {
     }
 
     /**
-     * 更新商品信息
+     * ajax更新商品信息
      *
      * @param request
      * @return
      */
-    @RequestMapping(value = "/updateProduct", method = RequestMethod.POST)
+    @RequestMapping(value = "/ajax/product/update", method = RequestMethod.POST)
     @ResponseBody
     public Msg updateProduct(HttpServletRequest request) {
 
@@ -340,15 +388,9 @@ public class ProductManagementController {
             return Msg.fail().setMsg("商品信息不能正确解析");
         }
 
+
         //从request中解析出上传的文件图片;
-        CommonsMultipartFile productImg = null;
-        CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
-        if (commonsMultipartResolver.isMultipart(request)) {
-            MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest) request;
-            productImg = (CommonsMultipartFile) multipartHttpServletRequest.getFile("productImg");
-        } else {
-            return Msg.fail().setMsg("图片文件解析失败");
-        }
+        MultipartFile productImg = ((MultipartRequest) request).getFile("shopImg");
 
         //判断是否需要更新图片;
         if (null != productImg) {
@@ -369,12 +411,12 @@ public class ProductManagementController {
     }
 
     /**
-     * 新增商品的方法;
+     * ajax新增商品的方法;
      *
      * @param request
      * @return
      */
-    @RequestMapping(value = "/addProduct", method = RequestMethod.POST)
+    @RequestMapping(value = "/ajax/product/add", method = RequestMethod.POST)
     @ResponseBody
     private Msg addProduct(HttpServletRequest request) {
 
@@ -394,15 +436,7 @@ public class ProductManagementController {
         }
 
         //从request中解析出上传的文件图片;
-        CommonsMultipartFile productImg = null;
-        CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
-        if (commonsMultipartResolver.isMultipart(request)) {
-            MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest) request;
-            productImg = (CommonsMultipartFile) multipartHttpServletRequest.getFile("productImg");
-        } else {
-            return Msg.fail().setMsg("解析图片出错了!");
-        }
-
+        MultipartFile productImg = ((MultipartRequest) request).getFile("shopImg");
         //新增商品,尽可能的减少从前端获取的值;
         if (null != product && null != productImg) {
           //  product.setShopId(shopId);//这个shopid必须从session中获取,这是为了安全

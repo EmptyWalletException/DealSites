@@ -27,7 +27,7 @@ public class FavoriteProductController {
      * 跳转到收藏夹页面;
      * @return
      */
-    @RequestMapping(value = "/showFavoritePage",method = RequestMethod.GET)
+    @RequestMapping(value = "/favorite/favoritePage",method = RequestMethod.GET)
     private String showFavoritePage(){
         return "/buyer/favorite";
     }
@@ -38,14 +38,20 @@ public class FavoriteProductController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/ajax/addFavoriteProduct",method = RequestMethod.POST)
+    @RequestMapping(value = "/ajax/favoriteProduct/add",method = RequestMethod.POST)
     @ResponseBody
     private Msg addFavoriteProduct(@RequestParam("productId")Integer productId, HttpServletRequest request){
         PersonInfo personInfo = (PersonInfo) request.getSession().getAttribute("personInfo");
         //添加之前查一下数据库此商品是否已经被此用户收藏了,防止出现重复收藏的bug
         Integer integer = favoriteProductService.getFavoriteProduct(personInfo.getUserId(),productId);
         if (0 >= integer){
-            Integer i = favoriteProductService.addFavoriteProduct(productId,personInfo.getUserId());
+            int i = 0;
+            try{
+                 i = favoriteProductService.addFavoriteProduct(productId,personInfo.getUserId());
+            }catch (Exception e){
+                e.printStackTrace();
+                return Msg.fail().setMsg("收藏失败");
+            }
             if (0 >= i){
                 return Msg.fail().setMsg("收藏失败,请重新登录后再尝试");
             }
@@ -61,11 +67,17 @@ public class FavoriteProductController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/ajax/removeFavoriteProduct",method = RequestMethod.POST)
+    @RequestMapping(value = "/ajax/favoriteProduct/delete",method = RequestMethod.POST)
     @ResponseBody
     private Msg removeFavoriteProduct(@RequestParam("productId")Integer productId, HttpServletRequest request){
         PersonInfo personInfo = (PersonInfo) request.getSession().getAttribute("personInfo");
-        Integer i = favoriteProductService.removeFavoriteProduct(productId,personInfo.getUserId());
+        int i = 0;
+        try{
+             i = favoriteProductService.removeFavoriteProduct(productId,personInfo.getUserId());
+        }catch (Exception e){
+            e.printStackTrace();
+            return Msg.fail().setMsg("取消收藏失败");
+        }
         if (0 >= i){
             return Msg.fail().setMsg("取消收藏失败,请重新登录后再尝试");
         }
@@ -78,7 +90,7 @@ public class FavoriteProductController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/ajax/getFavoriteProductList",method = RequestMethod.POST)
+    @RequestMapping(value = "/ajax/favoriteProduct/all",method = RequestMethod.POST)
     @ResponseBody
     private Msg getFavoriteProductList(@RequestParam("pn")Integer pn, HttpServletRequest request){
         PersonInfo personInfo = (PersonInfo) request.getSession().getAttribute("personInfo");
