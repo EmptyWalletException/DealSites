@@ -1,9 +1,8 @@
 package com.kingguanzhang.dealsites;
 
 import com.kingguanzhang.dealsites.pojo.Product;
+import com.kingguanzhang.dealsites.respository.ProductRespository;
 import io.searchbox.client.JestClient;
-
-import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +18,21 @@ public class DealsitesApplicationTests {
 
     @Autowired
     JestClient jestClient;
+
+    @Autowired
+    ProductRespository productRespository;
+
+    @Test
+    public void DataEStest(){
+        Product product = new Product();
+        product.setProductId(1);
+        product.setProductName("水杯");
+        product.setNormalPrice(5);
+        product.setEnableStatus(1);
+        product.setImgAddr("1");
+        product.setPriority(1);
+        productRespository.index(product);
+    }
 
     @Test
     public void contextLoads() {

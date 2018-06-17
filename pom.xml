@@ -33,10 +33,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
-        <!--<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
-        </dependency>-->
+        <!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-elasticsearch -->
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-elasticsearch</artifactId>
+        </dependency>
+
 
         <!--springboot data es找不到节点,所以换成jest操作-->
         <!-- https://mvnrepository.com/artifact/io.searchbox/jest -->

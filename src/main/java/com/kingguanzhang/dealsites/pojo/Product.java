@@ -4,13 +4,16 @@ package com.kingguanzhang.dealsites.pojo;
 
 
 import io.searchbox.annotations.JestId;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 import java.util.Date;
 
-
+@Document(indexName = "ds",type = "d")
 public class Product {
 
-    @JestId
+    //@JestId
+    @Id
     private Integer productId;
 
     private String productName;
