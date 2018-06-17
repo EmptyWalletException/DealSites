@@ -1,12 +1,21 @@
 使用springBoot搭建的交易平台,将上次做的SSM框架的交易平台项目改造成springBoot框架,并且整合更多的组件;
 
+2018/6/17
+
+1:搭建了Linux环境,利用docker安装好了elasticsearch,同时在项目test里测试了elasticsearch,发现springboot data ES会报错nodes找不到,而jest却能正常存值和取值,试验了许多解决方案仍然不行,正在进一步排除此问题;
+
+2018/6/16
+
+1:将原来部分session传值方式改成了从前端页面元素中取值再通过post传值,这是为了避免用户同时修改两个产品或店铺时session中的值被覆盖的问题;
+
 2018/6/15
 
 1:解决了图片上传时的一个异常:StandardMultipartFile不能转换为CommonsMultipartFile,原因是springboot已经自带commonFileUpload工具组件,同时springboot里的multipartFile工具类可完全替代commonMultipartFile,并且不能互转,解决方式是移除掉commonMultipartFile,使用springBoot的multipartFile效率更高;
 
 2:重新整理了一下项目的代码规范性,重点规范了前后端的url;
 
-3:service层和Controller层完善了异常捕获;目前前端还有部分输入框需要校验,后端校验也需要完善
+3:service层和Controller层完善了异常捕获;
+
 2018/6/14
 
 1:数据库新增商品收藏和店铺收藏两张表,与用户信息&商品&店铺这三张表关联;
@@ -35,7 +44,7 @@
 2018/6/11
 
 创建项目,关联GitHub仓库,将所有jsp页面改成了html页面供模板引擎使用,项目已经成功运行,目前需要解决的问题是
-
+ 
 1:tomcat的图片虚拟路径需要重新配置;
 
 2:security需要重新配置,经过测试发现security能成功运行进入security自带的登录页面,而在SSM框架时不能正常运行;

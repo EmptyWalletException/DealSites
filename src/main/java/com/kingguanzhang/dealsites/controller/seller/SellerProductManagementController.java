@@ -4,23 +4,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.kingguanzhang.dealsites.dto.Msg;
-import com.kingguanzhang.dealsites.pojo.FavoriteProduct;
-import com.kingguanzhang.dealsites.pojo.PersonInfo;
-import com.kingguanzhang.dealsites.pojo.Product;
-import com.kingguanzhang.dealsites.pojo.ProductCategory;
+import com.kingguanzhang.dealsites.pojo.*;
 import com.kingguanzhang.dealsites.service.FavoriteProductService;
 import com.kingguanzhang.dealsites.service.ProductCategoryService;
 import com.kingguanzhang.dealsites.service.ProductService;
+import com.kingguanzhang.dealsites.service.ShopService;
 import com.kingguanzhang.dealsites.util.RequestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.MultipartRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -40,13 +35,18 @@ public class SellerProductManagementController {
 
     @Autowired
     private FavoriteProductService favoriteProductService;
+    @Autowired
+    private ShopService shopService;
 
     /**
      * 跳转到商品管理页风格一
      * @return
      */
     @RequestMapping("/product/managementPage1")
-    public String showProductManagement(){
+    public String showProductManagement(HttpServletRequest request,Model model){
+        PersonInfo personInfo = (PersonInfo) request.getSession().getAttribute("personInfo");
+        Shop shop = shopService.getShopByUserId(personInfo.getUserId());
+        model.addAttribute("shopId",shop.getShopId());
         return "seller/productManagement1";
     }
 
@@ -55,7 +55,10 @@ public class SellerProductManagementController {
      * @return
      */
     @RequestMapping("/product/managementPage2")
-    public String showProductManagement2(){
+    public String showProductManagement2(HttpServletRequest request,Model model){
+        PersonInfo personInfo = (PersonInfo) request.getSession().getAttribute("personInfo");
+        Shop shop = shopService.getShopByUserId(personInfo.getUserId());
+        model.addAttribute("shopId",shop.getShopId());
         return "seller/productManagement2";
     }
 
@@ -76,6 +79,9 @@ public class SellerProductManagementController {
      */
     @RequestMapping("/product/editProductPage/{productId}")
     public String showEditProduct(@PathVariable("productId") Integer productId, Model model) {
+       /* //记得要将id写入session,为了以后更新商品时方便取出Id
+        request.getSession().setAttribute("productId",productId);*/
+       //发现写入session的话在以后同时编辑两个商品时会出现session值被覆盖的情况,所以改用js在前端元素中取id然后用get或post传参;
         Product product = productService.getProduct(productId);
         model.addAttribute("product",product);
         List<ProductCategory> productCategoryList = productCategoryService.getCategory();
@@ -96,7 +102,7 @@ public class SellerProductManagementController {
     @ResponseBody
     public Msg getOnSellProductListByCategoryId(@RequestParam("categoryId") Integer categoryId, @RequestParam(value = "pn",defaultValue = "1") Integer pn,HttpServletRequest request) {
         PageHelper.startPage(pn,8);
-        List<Product> productList = productService.getOnSellProductListByCategoryId(categoryId,null);
+        List<Product> productList = productService.getOnSellProductListByCategoryId(categoryId);
         PageInfo pageInfo = new PageInfo(productList,5);
         Msg msg =Msg.success().setMsg("获取商品集合成功").add("pageInfo", pageInfo);
 
@@ -118,10 +124,9 @@ public class SellerProductManagementController {
      */
     @RequestMapping(value = "/ajax/product/allOnSalesByShopIdAndCategoryId",method = RequestMethod.POST)
     @ResponseBody
-    public Msg getOnSellProductListByShopIdAndCategoryId(@RequestParam("categoryId") Integer categoryId, @RequestParam(value = "pn",defaultValue = "1") Integer pn, HttpServletRequest request) {
-       Integer shopId = (Integer) request.getSession().getAttribute("shopId");
+    public Msg getOnSellProductListByShopIdAndCategoryId(@RequestParam("categoryId") Integer categoryId,@RequestParam("shopId") Integer shopId, @RequestParam(value = "pn",defaultValue = "1") Integer pn, HttpServletRequest request) {
         PageHelper.startPage(pn,8);
-        List<Product> productList = productService.getOnSellProductListByCategoryId(categoryId,shopId);
+        List<Product> productList = productService.getOnSellProductListByCategoryIdAndShopId(categoryId,shopId);
         PageInfo pageInfo = new PageInfo(productList,5);
         Msg msg =Msg.success().setMsg("获取商品集合成功").add("pageInfo", pageInfo);
 
@@ -284,13 +289,12 @@ public class SellerProductManagementController {
 
     /**
      * ajax查询店铺内所有的商品列表;
-     * @param request
+     *
      * @return
      */
     @RequestMapping(value = "/ajax/product/allByShopId",method = RequestMethod.POST)
     @ResponseBody
-    public Msg getProductList(@RequestParam(value = "pn",defaultValue = "1")Integer pn, HttpServletRequest request) {
-        Integer shopId = (Integer) request.getSession().getAttribute("shopId");//在跳转到店铺管理首页时就往session中写入shopId
+    public Msg getProductList(@RequestParam(value = "pn",defaultValue = "1")Integer pn,@RequestParam("shopId")Integer shopId) {
         //使用分页插件官方推荐的第二种方式开启分页查询;
         PageHelper.startPage(pn, 8);
         //然后紧跟的查询就是分页查询;
@@ -301,14 +305,13 @@ public class SellerProductManagementController {
     }
 
     /**
-     * ajax查询店铺内所有上架中的商品列表;
+     * ajax查询店铺内所有上架中的商品列表,此方法与common中的一个方法一样,但为了方便以后升级所以两份都保留;
      * @param request
      * @return
      */
     @RequestMapping(value = "/ajax/product/allOnSalesByShopId",method = RequestMethod.POST)
     @ResponseBody
-    public Msg getShelveProductList(@RequestParam(value = "pn",defaultValue = "1")Integer pn, HttpServletRequest request) {
-        Integer shopId = (Integer) request.getSession().getAttribute("shopId");
+    public Msg getShelveProductList(@RequestParam(value = "pn",defaultValue = "1")Integer pn,@RequestParam(value = "shopId")Integer shopId, HttpServletRequest request) {
         //使用分页插件官方推荐的第二种方式开启分页查询;
         PageHelper.startPage(pn, 8);
         //然后紧跟的查询就是分页查询;
@@ -334,8 +337,7 @@ public class SellerProductManagementController {
      */
     @RequestMapping(value = "/ajax/product/allHaltSalesByShopId",method = RequestMethod.POST)
     @ResponseBody
-    public Msg getUnShelveProduct(@RequestParam(value = "pn",defaultValue = "1")Integer pn, HttpServletRequest request) {
-        Integer shopId = (Integer) request.getSession().getAttribute("shopId");
+    public Msg getUnShelveProduct(@RequestParam(value = "pn",defaultValue = "1")Integer pn,@RequestParam(value = "shopId")Integer shopId, HttpServletRequest request) {
         //使用分页插件官方推荐的第二种方式开启分页查询;
         PageHelper.startPage(pn, 8);
         //然后紧跟的查询就是分页查询;

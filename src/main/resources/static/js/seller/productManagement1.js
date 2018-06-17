@@ -6,6 +6,7 @@
 /* 定义一个全局变量用于记录末页的页码,服务于页面自动跳转到最后一页 */
 var maxPage;
 var currentPage;
+var shopId = $("#shopId").val();
 $(function(){
     to_page("/seller/ajax/product/allByShopId",1);
     changeBatchDeleteButton();
@@ -16,7 +17,7 @@ $(function(){
 function to_page(url,pn){
     $.ajax({
         url:url,
-        data:"pn="+pn,
+        data:{"pn":pn,"shopId":shopId},
         type:"post",
         success:function(result){
             maxPage = result.extend.pageInfo.pages;

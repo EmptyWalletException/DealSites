@@ -49,23 +49,17 @@
                                         <p class="card-title pricing-card-title">注意事项</p>
                                         <ul class="list-unstyled mt-3 mb-4">
                                             <li>每个用户只能注册一个店铺;</li>
-                                            <li>您可以同时拥有买家和卖家两种身份;</li>
-                                            <li>注册需要等待约3个工作日的审核时间;</li>
-                                            <li>注册成功后请仔细阅读店铺运营规范;</li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="card mb-4 box-shadow">
                                     <div class="card-header">
-                                        <a type="button" class="btn btn-lg btn-block btn-primary" href="/seller/shop/editShopPage">编辑店铺</a>
+                                        <a type="button" th:class="${session.shopId == null}?'btn btn-lg btn-block btn-primary disabled':'btn btn-lg btn-block btn-primary'"  href="/seller/shop/editShopPage">编辑店铺</a>
                                     </div>
                                     <div class="card-body">
                                         <p class="card-title pricing-card-title">注意事项</p>
                                         <ul class="list-unstyled mt-3 mb-4">
                                             <li>需要您已经拥有了一个已通过审核的店铺;</li>
-                                            <li>您可以再次修改店铺的所有信息;</li>
-                                            <li>您每个月只有一次修改机会;</li>
-                                            <li>请等待约3个工作日的审核时间;</li>
                                         </ul>
 
                                     </div>
@@ -73,15 +67,11 @@
                                 <div class="card mb-4 box-shadow">
                                     <div class="card-header">
                                         <a type="button" class="btn btn-lg btn-block btn-outline-primary" th:href="'/common/shop/shopDetailsPage/'+${session.shopId}" href="#">查看店铺</a>
-
                                     </div>
                                     <div class="card-body">
                                         <p class="card-title pricing-card-title">功能说明</p>
                                         <ul class="list-unstyled mt-3 mb-4">
                                             <li>您可以通过顾客视角来浏览您的店铺;</li>
-                                            <li>进入顾客视角后您无法执行购买和收藏操作;</li>
-                                            <li>客制化店铺主页的功能在以后会上线;</li>
-                                            <li>如果您有好的建议请联系我们;</li>
                                         </ul>
                                     </div>
                                 </div>

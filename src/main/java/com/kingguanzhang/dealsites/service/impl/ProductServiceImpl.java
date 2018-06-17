@@ -22,7 +22,7 @@ public class ProductServiceImpl implements ProductService {
     private ProductMapper productMapper;
 
     /**
-     * 查询所有商品
+     * 查询店铺内所有商品
      * @param shopId
      * @return
      */
@@ -38,6 +38,11 @@ public class ProductServiceImpl implements ProductService {
         return productList;
     }
 
+    /**
+     * 获取商品详情
+     * @param productId
+     * @return
+     */
     @Override
     public Product getProduct(Integer productId) {
         if (null == productId){
@@ -47,6 +52,12 @@ public class ProductServiceImpl implements ProductService {
         return product;
     }
 
+    /**
+     * 新增商品
+     * @param product
+     * @param productImgInputStream
+     * @param originalFilename
+     */
     @Override
     public void addProduct(Product product, InputStream productImgInputStream, String originalFilename) {
         if (null == product){
@@ -130,7 +141,7 @@ public class ProductServiceImpl implements ProductService {
      * @return
      */
     @Override
-    public List<Product> getOnSellProductListByCategoryId(Integer categoryId,Integer shopId) {
+    public List<Product> getOnSellProductListByCategoryIdAndShopId(Integer categoryId,Integer shopId) {
         if (null == categoryId || null == shopId ){
             throw new RuntimeException("未能获取到分类Id或店铺Id");
         }
@@ -144,7 +155,24 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * 获取所有商店的所有在售商品;最好按后编辑时间倒序;
+     * 获取所有店铺某个分类下所有商品;
+     * @return
+     */
+    @Override
+    public List<Product> getOnSellProductListByCategoryId(Integer categoryId) {
+        if (null == categoryId  ){
+            throw new RuntimeException("未能获取到分类Id");
+        }
+        ProductExample productExample = new ProductExample();
+        ProductExample.Criteria criteria = productExample.createCriteria();
+        criteria.andProductCategoryIdEqualTo(categoryId);
+        criteria.andEnableStatusEqualTo(0);
+        List<Product> productList = productMapper.selectByExample(productExample);
+        return productList;
+    }
+
+    /**
+     * 获取所有店铺的所有在售商品;最按后编辑时间倒序;
      * @return
      */
     @Override

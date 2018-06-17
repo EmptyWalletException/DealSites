@@ -12,6 +12,7 @@ $("#submit_EditShop").click(function(){
     /*因为涉及到文件的处理,无法直接用form封装到pojo中,所以先使用js代码来封装数据*/
     var shop={};
     // shop.shopId= null; 需要从页面获取店铺id;
+    shop.shopId = $("#shopId").val();
     shop.shopName = $("#shopName").val();
     shop.shopDesc= $("#shopDesc").val();
     shop.phone= $("#phone").val();

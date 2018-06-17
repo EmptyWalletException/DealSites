@@ -35,13 +35,11 @@ public class CommonProductController {
      */
     @RequestMapping(value = "/ajax/product/allOnSalesByShopIdAndCategoryId",method = RequestMethod.POST)
     @ResponseBody
-    public Msg getOnSellProductListByShopIdAndCategoryId(@RequestParam("categoryId") Integer categoryId, @RequestParam(value = "pn",defaultValue = "1") Integer pn, HttpServletRequest request) {
-        Integer shopId = (Integer) request.getSession().getAttribute("shopId");
+    public Msg getOnSellProductListByShopIdAndCategoryId(@RequestParam("categoryId") Integer categoryId, @RequestParam("shopId")Integer shopId,@RequestParam(value = "pn",defaultValue = "1") Integer pn,HttpServletRequest request) {
         PageHelper.startPage(pn,8);
-        List<Product> productList = productService.getOnSellProductListByCategoryId(categoryId,shopId);
+        List<Product> productList = productService.getOnSellProductListByCategoryIdAndShopId(categoryId,shopId);
         PageInfo pageInfo = new PageInfo(productList,5);
         Msg msg =Msg.success().setMsg("获取商品集合成功").add("pageInfo", pageInfo);
-
         //查询出用户收藏的商品的Id,为了在首页的商品卡牌中判断是显示收藏还是取消收藏按钮;
         PersonInfo personInfo = (PersonInfo) request.getSession().getAttribute("personInfo");
         if (null != personInfo){
@@ -60,8 +58,7 @@ public class CommonProductController {
      */
     @RequestMapping(value = "/ajax/product/allOnSalesByShopId",method = RequestMethod.POST)
     @ResponseBody
-    public Msg getShelveProductList(@RequestParam(value = "pn",defaultValue = "1")Integer pn, HttpServletRequest request) {
-        Integer shopId = (Integer) request.getSession().getAttribute("shopId");
+    public Msg getShelveProductList(@RequestParam(value = "pn",defaultValue = "1")Integer pn, @RequestParam("shopId")Integer shopId, HttpServletRequest request) {
         //使用分页插件官方推荐的第二种方式开启分页查询;
         PageHelper.startPage(pn, 8);
         //然后紧跟的查询就是分页查询;
@@ -69,7 +66,6 @@ public class CommonProductController {
         //查询之后使用PageInfo来包装,方便在页面视图中处理页码,下面用的构造器第二个参数是页面底部可供点击的连续页码数;
         PageInfo pageInfo = new PageInfo(productList,5);
         Msg msg =Msg.success().setMsg("获取商品集合成功").add("pageInfo", pageInfo);
-
         //查询出用户收藏的商品的Id,为了在首页的商品卡牌中判断是显示收藏还是取消收藏按钮;
         PersonInfo personInfo = (PersonInfo) request.getSession().getAttribute("personInfo");
         if (null != personInfo){
@@ -117,7 +113,7 @@ public class CommonProductController {
     @ResponseBody
     public Msg getOnSellProductListByCategoryId(@RequestParam("categoryId") Integer categoryId, @RequestParam(value = "pn",defaultValue = "1") Integer pn,HttpServletRequest request) {
         PageHelper.startPage(pn,8);
-        List<Product> productList = productService.getOnSellProductListByCategoryId(categoryId,null);
+        List<Product> productList = productService.getOnSellProductListByCategoryId(categoryId);
         PageInfo pageInfo = new PageInfo(productList,5);
         Msg msg =Msg.success().setMsg("获取商品集合成功").add("pageInfo", pageInfo);
 

@@ -15,6 +15,7 @@ $("#submit_EditProduct").click(function(){
     product.productName = $("#productName").val();
     product.productDesc= $("#productDesc").val();
     product.normalPrice= $("#normalPrice").val();
+    product.productId= $("#productId").val();
     product.productCategoryId= $("#productCategorySel option:selected").attr("value");
 
     var productImg = $("#inputFile")[0].files[0]; //需要在控制层处理一下用户没有上传文件的情况

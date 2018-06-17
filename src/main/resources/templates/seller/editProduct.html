@@ -41,8 +41,9 @@
                         <h3 class="text-center">编辑商品</h3>
                         <div class="needs-validation" id="editProductForm"  novalidate>
                             <div >
-                                <img  class="card-img" src="" alt="商品图片" th:src="${product.imgAddr}" id="productImg">
+                                <img  class="card-img" src="" alt="商品图片" th:src="'../../../'+${product.imgAddr}" id="productImg">
                             </div>
+                            <input type="hidden" id="productId" th:value="${product.productId}"/>
                             <br/>
                             <div class="mb-3">
                                 <label for="productName">商品名字:</label>

@@ -6,6 +6,7 @@
 /* 定义一个全局变量用于记录末页的页码,服务于页面自动跳转到最后一页 */
 var maxPage;
 var currentPage;
+var shopId = $("#shopId").val();
 $(function(){
     build_shopDetails("/common/ajax/shop/get");
     build_shopCategory("/common/ajax/productCategory/all");
@@ -60,13 +61,6 @@ function build_shopDetails(url) {
         type:"get",
         success:function (result) {
             var shop = result.extend.shop;
-            $("#shopImg").attr("src","../../../"+shop.shopImg);
-            $("#owner").text("店铺主人:"+shop.personInfo.name);
-            $("#shopName").text(shop.shopName);
-            $("#shopDesc").text("店铺简介:"+shop.shopDesc);
-            $("#priority").text("店铺等级:"+shop.priority);
-            $("#phone").text("联系方式:"+shop.phone);
-            $("#shopAddr").text("店铺店址:"+shop.shopAddr);
             var isFavorite = result.extend.isFavorite;
             if (true == isFavorite){
                 $("#shopDetailsDiv").append("<button type='button' class='btn btn-sm btn-outline-secondary btn_cancelCollectShop' shopId='"+shop.shopId +"' ><span class='glyphicon glyphicon-heart'></span> 取消收藏</button>")
@@ -147,7 +141,7 @@ $("#shopCategoryList").on('click','.shopCategory',function () {
 function to_page(url,categoryId,pn){
     $.ajax({
         url:url,
-        data:{"categoryId":categoryId,"pn":pn},
+        data:{"categoryId":categoryId,"shopId":shopId,"pn":pn},
         type:"post",
         success:function(result){
             maxPage = result.extend.pageInfo.pages;
@@ -162,95 +156,106 @@ function to_page(url,categoryId,pn){
 
 /*获取商品信息并回显,需要传入一个url字符串以调用控制层不同的查询方法*/
 function build_product_table(result){
+    var flag=0;//用于生成收藏按钮时的判断,注意作用域,并且在每个商品遍历完后要重置成0;
+    if(null != result.extend.favoriteProductList){
+        var favoriteProductList = result.extend.favoriteProductList;
+    }
+    $("#productListRow").empty();
+    var productList = result.extend.pageInfo.list;
+    if (0 == productList.length){
+        $("#productListRow").append(
+            "<div class='container text-center'>" +
+            "<h4>当前分类下没有商品</h4>"+
+            "</div>"
+        );
+    } else {
+        $.each(productList,function (index,product) {
+            if(null != favoriteProductList){
+                $.each(favoriteProductList,function (index,favoriteProduct) {
+                    if (product.productId == favoriteProduct.productId){
+                        flag = 1;
+                    }
+                })
+            }
+            var createTime = new Date(product.createTime);
+            var editTime = new Date(product.editTime);
+            if (0 == flag){
+                $("#productListRow").append(
+                    "<div class='col-lg-3 col-md-6 col-sm-6'>" +
+                    "<div class='card mb-4 box-shadow'>" +
+                    "<img class='card-img-top' src='../../../" +product.imgAddr +"' alt='商品图片'>" +
+                    "<div class='card-body'>" +
 
-                var productList = result.extend.pageInfo.list;
+                    "<h4>" +product.productName + "</h4>" +
+                    "<div class='status'>" +
+                    "<a class=\"text-muted\" href='/common/shop/shopDetailsPage/"+ product.shop.shopId+"'>店铺 : "+ product.shop.shopName +"</a>" +
+                    "</div>" +
+                    "<div>" +
+                    "<span>$ " +product.normalPrice + "</span>"+
+                    "</div>" +
+                    "<div>" +
+                    "<small class='text-muted'>商品创建时间 : " +createTime.toLocaleDateString() +"</small>" +
+                    "</div>" +
+                    "<div>" +
+                    "<small class='text-muted'>最后编辑时间 : " +editTime.toLocaleDateString()+ "</small>" +
+                    "</div>" +
+                    "<div>" +
+                    "<small class='text-muted'>商品分类 : "+product.productCategory.productCategoryName+ "</small>" +
+                    "</div>" +
+                    "<p class='card-text'>" +product.productDesc + "</p>" +
+                    "<div class=''>" +
+                    "<div class='btn-group'>" +
+                    "<button type='button' class='btn btn-sm btn-outline-secondary btn_collectProduct'  productId='"+product.productId+"'><span class='glyphicon glyphicon-heart-empty'></span> 收藏</button>" +
+                    "<button type='button' class='btn btn-sm btn-outline-secondary btn_addToCart'  productId='"+product.productId+"'>加入购物车</button>" +
+                    "</div>" +
+                    "</div>" +
+                    "</div>"+
+                    "</div>"
+                );
+            } else{
+                $("#productListRow").append(
+                    "<div class='col-lg-3 col-md-6 col-sm-6'>" +
+                    "<div class='card mb-4 box-shadow'>" +
+                    "<img class='card-img-top' src='../../../" +product.imgAddr +"' alt='商品图片'>" +
+                    "<div class='card-body'>" +
 
-                var flag=0;//用于生成收藏按钮时的判断,注意作用域,并且在每个商品遍历完后要重置成0;
-                if(null != result.extend.favoriteProductList){
-                    var favoriteProductList = result.extend.favoriteProductList;
-                }
+                    "<h4>" +product.productName + "</h4>" +
+                    "<div class='status'>" +
+                    "<a class=\"text-muted\" href='/common/shop/shopDetailsPage/"+ product.shop.shopId+"'>店铺 : "+ product.shop.shopName +"</a>" +
+                    "</div>" +
+                    "<div>" +
+                    "<span>$ " +product.normalPrice + "</span>"+
+                    "</div>" +
+                    "<div>" +
+                    "<small class='text-muted'>商品创建时间 : " +createTime.toLocaleDateString() +"</small>" +
+                    "</div>" +
+                    "<div>" +
+                    "<small class='text-muted'>最后编辑时间 : " +editTime.toLocaleDateString()+ "</small>" +
+                    "</div>" +
+                    "<div>" +
+                    "<small class='text-muted'>商品分类 : "+product.productCategory.productCategoryName+ "</small>" +
+                    "</div>" +
+                    "<p class='card-text'>" +product.productDesc + "</p>" +
+                    "<div class=''>" +
+                    "<div class='btn-group'>" +
+                    "<button type='button' class='btn btn-sm btn-outline-secondary btn_cancelCollectProduct'  productId='"+product.productId+"'><span class='glyphicon glyphicon-heart'></span> 取消收藏</button>" +
+                    "<button type='button' class='btn btn-sm btn-outline-secondary btn_addToCart'  productId='"+product.productId+"'>加入购物车</button>" +
+                    "</div>" +
+                    "</div>" +
+                    "</div>"+
+                    "</div>"
+                );
+            }
+            //注意要将flag的值重置为0;
+            flag =0;
+        })
 
-                $("#shopListRow").empty();
-    $.each(productList,function (index,product) {
-
-        if(null != favoriteProductList){
-            $.each(favoriteProductList,function (index,favoriteProduct) {
-                if (product.productId == favoriteProduct.productId){
-                    flag = 1;
-                }
-            })
-        }
-        var createTime = new Date(product.createTime);
-        var editTime = new Date(product.editTime);
-        if (0 == flag){
-            $("#shopListRow").append(
-                "<div class='col-lg-3 col-md-6 col-sm-6'>" +
-                "<div class='card mb-4 box-shadow'>" +
-                "<img class='card-img-top' src='../../../" +product.imgAddr +"' alt='商品图片'>" +
-                "<div class='card-body'>" +
-
-                "<h4>" +product.productName + "</h4>" +
-                "<div>" +
-                "<span>$ " +product.normalPrice + "</span>"+
-                "</div>" +
-                "<div>" +
-                "<small class='text-muted'>商品创建时间 : " +createTime.toLocaleDateString() +"</small>" +
-                "</div>" +
-                "<div>" +
-                "<small class='text-muted'>最后编辑时间 : " +editTime.toLocaleDateString()+ "</small>" +
-                "</div>" +
-                "<div>" +
-                "<small class='text-muted'>商品分类 : "+product.productCategory.productCategoryName+ "</small>" +
-                "</div>" +
-                "<p class='card-text'>" +product.productDesc + "</p>" +
-                "<div class=''>" +
-                "<div class='btn-group'>" +
-                "<button type='button' class='btn btn-sm btn-outline-secondary btn_collectProduct'  productId='"+product.productId+"'><span class='glyphicon glyphicon-heart-empty'></span> 收藏</button>" +
-                "<button type='button' class='btn btn-sm btn-outline-secondary btn_addToCart'  productId='"+product.productId+"'>加入购物车</button>" +
-                "</div>" +
-                "</div>" +
-                "</div>"+
-                "</div>"
-            );
-        } else{
-            $("#shopListRow").append(
-                "<div class='col-lg-3 col-md-6 col-sm-6'>" +
-                "<div class='card mb-4 box-shadow'>" +
-                "<img class='card-img-top' src='../../../" +product.imgAddr +"' alt='商品图片'>" +
-                "<div class='card-body'>" +
-
-                "<h4>" +product.productName + "</h4>" +
-                "<div>" +
-                "<span>$ " +product.normalPrice + "</span>"+
-                "</div>" +
-                "<div>" +
-                "<small class='text-muted'>商品创建时间 : " +createTime.toLocaleDateString() +"</small>" +
-                "</div>" +
-                "<div>" +
-                "<small class='text-muted'>最后编辑时间 : " +editTime.toLocaleDateString()+ "</small>" +
-                "</div>" +
-                "<div>" +
-                "<small class='text-muted'>商品分类 : "+product.productCategory.productCategoryName+ "</small>" +
-                "</div>" +
-                "<p class='card-text'>" +product.productDesc + "</p>" +
-                "<div class=''>" +
-                "<div class='btn-group'>" +
-                "<button type='button' class='btn btn-sm btn-outline-secondary btn_cancelCollectProduct'  productId='"+product.productId+"'><span class='glyphicon glyphicon-heart'></span> 取消收藏</button>" +
-                "<button type='button' class='btn btn-sm btn-outline-secondary btn_addToCart'  productId='"+product.productId+"'>加入购物车</button>" +
-                "</div>" +
-                "</div>" +
-                "</div>"+
-                "</div>"
-            );
-        }
-        //注意要将flag的值重置为0;
-        flag =0;
-    })
+    }
 }
 
 
 //将单个商品添加进购物车
-$("#shopListRow").on('click','.btn_addToCart',function () {
+$("#productListRow").on('click','.btn_addToCart',function () {
     var userCenter =$("#userCenter").text();
     if("" == userCenter){
         window.location.href="/login";
@@ -267,7 +272,7 @@ $("#shopListRow").on('click','.btn_addToCart',function () {
 })
 
 //收藏商品
-$("#shopListRow").on('click','.btn_collectProduct',function () {
+$("#productListRow").on('click','.btn_collectProduct',function () {
     var userCenter =$("#userCenter").text();
     if("" == userCenter){
         window.location.href="/login";
@@ -293,7 +298,7 @@ $("#shopListRow").on('click','.btn_collectProduct',function () {
 })
 
 //取消收藏商品
-$("#shopListRow").on('click','.btn_cancelCollectProduct',function () {
+$("#productListRow").on('click','.btn_cancelCollectProduct',function () {
     var userCenter =$("#userCenter").text();
     if("" == userCenter){
         window.location.href="/login";
@@ -324,6 +329,10 @@ $("#shopListRow").on('click','.btn_cancelCollectProduct',function () {
 function build_page_info(result){
     /* 生成新的元素前一定要先清空掉以前的数据,否则会累加到页面上 */
     $("#page_info").empty();
+    var productList = result.extend.pageInfo.list;
+    if (0 == productList.length){
+        return ;
+    }
     $("#page_info").append("当前第"+result.extend.pageInfo.pageNum+"/"+result.extend.pageInfo.pages+"页,当前页记录数:"+result.extend.pageInfo.size+"条;总记录数:"+result.extend.pageInfo.total+"条");
 }
 
@@ -331,6 +340,10 @@ function build_page_info(result){
 function build_page_nav(url,categoryId,result){
     /* 生成新的元素前一定要先清空掉以前的数据,否则会累加到页面上 */
     $("#page_nav").empty();
+    var productList = result.extend.pageInfo.list;
+    if (0 == productList.length){
+        return ;
+    }
     var ul = $("<ul></ul>").addClass("pagination");
     /* 生成首页按钮 */
     var li_frist = $("<li class='page-item'></li>").append($("<a class='page-link'></a>").attr("href","#").append("首页"));

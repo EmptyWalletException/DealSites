@@ -52,13 +52,14 @@ function build_product_table(result){
             "<img class=\"card-img-top\" src=\"../../" +product.imgAddr +"\" alt=\"商品图片\">" +
             "<div class=\"card-body\">" +
 
-            "<h1>" +product.productName + "</h1>" +
+            "<h4>" +product.productName + "</h4>" +
+            "<div class='status'>" +
+            "<a class=\"text-muted\" href='/common/shop/shopDetailsPage/"+ product.shop.shopId+"'>店铺 : "+ product.shop.shopName +"</a>" +
+            "</div>" +
             "<div>" +
             "<span>$ " +product.normalPrice + "</span>"+
             "</div>" +
-            "<div class='status'>" +
-            "<a class=\"text-muted\" href=/shop/shopDetailsPage/'"+ product.shop.shopId+"'>店铺 : "+ product.shop.shopName +"</a>" +
-            "</div>" +
+
             "<div>" +
             "<small class=\"text-muted\">商品创建时间 : " +createTime.toLocaleDateString() +"</small>" +
             "</div>" +
@@ -73,6 +74,7 @@ function build_product_table(result){
             "<div class=\"\">" +
             "<div class=\"btn-group\">" +
             "<button type='button' class='btn btn-sm btn-outline-secondary btn_removeProduct'  productId='"+product.productId+"'><span class='glyphicon glyphicon-heart'></span> 取消收藏</button>" +
+            "<button type='button' class='btn btn-sm btn-outline-secondary btn_addToCart'  productId='"+product.productId+"'>加入购物车</button>" +
             "</div>" +
             "<br/>"+
             "</div>" +
@@ -101,6 +103,23 @@ $("#productListRow").on('click','.btn_removeProduct',function () {
     } else{
         return;
     }
+})
+
+//将单个商品添加进购物车
+$("#productListRow").on('click','.btn_addToCart',function () {
+    var userCenter =$("#userCenter").text();
+    if("" == userCenter){
+        window.location.href="/login";
+    }
+    var productId = $(this).attr("productId");
+    $.ajax({
+        url:"/buyer/ajax/cart/addProduct",
+        type:'POST',
+        data:{'productId':productId},
+        success:function (result) {
+            alert(result.msg);
+        }
+    });
 })
 
 

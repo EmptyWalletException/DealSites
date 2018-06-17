@@ -31,14 +31,15 @@
 
             <!--<%&#45;&#45;店铺详情区域&#45;&#45;%>-->
             <div class="card mb-3">
-                <img class="card-img-top" id="shopImg" src="/images/1.jpg" alt="店铺主页图片">
+                <img class="card-img-top" id="shopImg" th:src="'../../../'+${shop.shopImg}" alt="店铺主页图片">
                 <div class="card-body" id="shopDetailsDiv">
-                    <h3 class="card-title" id="shopName">欢迎光临街角咖啡 </h3>
-                    <p  class="card-text" id="owner">店铺主人</p>
-                    <p class="card-text" id="priority"><small class="text-muted">店铺等级</small></p>
-                    <p class="card-text" id="shopDesc">店铺描述</p>
-                    <p  class="card-text" id="phone"  >联系方式</p>
-                    <p class="card-text" id="shopAddr">店铺地址</p>
+                    <h3 class="card-title" id="shopName" th:text="${shop.shopName}">欢迎光临街角咖啡 </h3>
+                    <input type="hidden" id="shopId" th:value="${shop.shopId}"/>
+                    <p  class="card-text" id="owner" th:text="${shop.shopName}">店铺主人</p>
+                    <p class="card-text" id="priority" th:text="${shop.priority}"><small class="text-muted">店铺等级</small></p>
+                    <p class="card-text" id="shopDesc" th:text="${shop.shopDesc}">店铺描述</p>
+                    <p  class="card-text" id="phone"   th:text="${shop.phone}">联系方式</p>
+                    <p class="card-text" id="shopAddr" th:text="${shop.shopAddr}">店铺地址</p>
 
                 </div>
             </div>
@@ -82,7 +83,7 @@
                             </div>
 
                           <!--  <%&#45;&#45;卡牌展示区&#45;&#45;%>-->
-                            <div class="row col-md-10" id="shopListRow">
+                            <div class="row col-md-10" id="productListRow">
 
                                 <div class="col-lg-2 col-sm-6">
                                     <div class="card mb-4 box-shadow">

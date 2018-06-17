@@ -1,8 +1,16 @@
 package com.kingguanzhang.dealsites.pojo;
 
+
+
+
+import io.searchbox.annotations.JestId;
+
 import java.util.Date;
 
+
 public class Product {
+
+    @JestId
     private Integer productId;
 
     private String productName;

@@ -7,6 +7,7 @@ import com.kingguanzhang.dealsites.service.FavoriteShopService;
 import com.kingguanzhang.dealsites.service.ShopService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,8 +29,9 @@ public class CommonShopController {
      * @return
      */
     @RequestMapping(value = "/shop/shopDetailsPage/{shopId}",method = RequestMethod.GET)
-    public String showShopDetails(@PathVariable("shopId") Integer shopId, HttpServletRequest request){
-        request.getSession().setAttribute("shopId",shopId);
+    public String showShopDetails(@PathVariable("shopId") Integer shopId, Model model){
+        Shop shop = shopService.getShop(shopId);
+        model.addAttribute("shop",shop);
         return "common/shopDetails";
     }
 

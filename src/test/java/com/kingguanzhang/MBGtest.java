@@ -1,4 +1,4 @@
-
+package com.kingguanzhang;
 
 
 import org.mybatis.generator.api.MyBatisGenerator;

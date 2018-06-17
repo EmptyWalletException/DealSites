@@ -40,8 +40,9 @@
 
                         <div class="needs-validation" id="registerShopForm"  novalidate>
                             <div >
-                                <img  class="card-img" src="" alt="店铺主页图片" th:src="'../../'+${shop.shopImg}" id="shopImg">
+                                <img  class="card-img" src="" alt="店铺主页图片" th:src="'../../../'+${shop.shopImg}" id="shopImg">
                             </div>
+                            <input id="shopId" type="hidden" th:value="${shop.shopId}"/>
                             <br/>
                             <div class="mb-3">
                                 <label for="shopName">招牌名字:</label>

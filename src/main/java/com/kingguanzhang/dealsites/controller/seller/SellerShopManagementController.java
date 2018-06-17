@@ -17,10 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.MultipartRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -43,26 +40,33 @@ public class SellerShopManagementController {
      */
     @RequestMapping("/registerShop/registerShopPage")
     public String showRegister(HttpServletRequest request) {
+        PersonInfo personInfo = (PersonInfo) request.getSession().getAttribute("personInfo");
         //判断用户如果已经有了店铺则返回到店铺管理页,如果没有就跳转到店铺注册页面;
-        if (null != request.getSession().getAttribute("shopId")){
-            return "seller/shopManagement";
-        }
+        if (null != personInfo){
+            Shop shop = shopService.getShopByUserId(personInfo.getUserId());
+            if (null != shop){
+                return "seller/shopManagement";
+            }
             return "seller/registerShop";
+        }
+        return "common/login";
     }
 
 
     /**
-     * 跳转到卖家店铺管理,需要在此时就在session中写入shopId,后期会改到登录时写入;
-     * @param request
+     * 跳转到卖家店铺管理;
+     *
      * @return
      */
     @RequestMapping(value = "/shop/shopManagementPage",method = RequestMethod.GET)
-    public String showShopManagement( HttpServletRequest request){
-        //在首页时就已经在session中写入了personInfo;
+    public String showShopManagement(HttpServletRequest request ){
         PersonInfo personInfo = (PersonInfo) request.getSession().getAttribute("personInfo");
-        //通过用户Id得到店铺;
-        Shop shop = shopService.getShopByUserId(personInfo.getUserId());
-        request.getSession().setAttribute("shopId",shop.getShopId());
+        if (null != personInfo){
+            Shop shop = shopService.getShopByUserId(personInfo.getUserId());
+            if (null != shop){
+               request.getSession().setAttribute("shopId",shop.getShopId());
+            }
+        }
         return "seller/shopManagement";
     }
 
@@ -74,8 +78,8 @@ public class SellerShopManagementController {
      */
     @RequestMapping(value = "/shop/editShopPage",method = RequestMethod.GET)
     public String showEditShop(HttpServletRequest request, Model model){
-        Integer shopId = (Integer) request.getSession().getAttribute("shopId");
-        Shop shop = shopService.getShop(shopId);
+        PersonInfo personInfo = (PersonInfo) request.getSession().getAttribute("personInfo");
+        Shop shop = shopService.getShopByUserId(personInfo.getUserId());
         List<Area> areaList = areaService.getAreas();
         model.addAttribute("shop",shop);
         model.addAttribute("areaList",areaList);
@@ -83,33 +87,6 @@ public class SellerShopManagementController {
     }
 
 
-    /**
-     * ajax 获取店铺详情;
-     * @param request
-     * @return
-     */
-    @RequestMapping(value = "/ajax/shop/get",method = RequestMethod.GET)//这里的shopId需要修改成通过session中用户id来查询绑定的商店id
-    @ResponseBody
-    public Msg getShop(HttpServletRequest request){
-
-        Integer shopId = (Integer) request.getSession().getAttribute("shopId");
-        PersonInfo personInfo = (PersonInfo) request.getSession().getAttribute("personInfo");
-        //将shopId直接写入session,方便后续网页内容的查询;
-        if (null == shopId){
-            return Msg.fail().setMsg("获取商店信息失败!");
-        }
-        Shop shop = shopService.getShop(shopId);
-        Msg msg =Msg.success().add("shop",shop);
-
-        //查询当前用户的收藏店铺,用于判断页面是否显示收藏店铺按钮
-        if (null != personInfo) {
-            Integer integer = favoriteShopService.getFavoriteShop(personInfo.getUserId(), shopId);
-            if (0 < integer){
-               return msg.add("isFavorite",true);
-            }
-        }
-        return msg.add("isFavorite",false);
-    }
 
     /**
      * ajax更新店铺;
