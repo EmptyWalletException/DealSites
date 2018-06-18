@@ -9,12 +9,16 @@ import com.kingguanzhang.dealsites.service.ProductService;
 import com.kingguanzhang.dealsites.util.ImgUtil;
 import com.kingguanzhang.dealsites.util.PathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 
+@CacheConfig(cacheNames = "pro")
 @Service
 public class ProductServiceImpl implements ProductService {
 
@@ -175,6 +179,7 @@ public class ProductServiceImpl implements ProductService {
      * 获取所有店铺的所有在售商品;最按后编辑时间倒序;
      * @return
      */
+    @Cacheable(value = "pro",key = "list")
     @Override
     public List<Product> getAllOnSellProductList() {
         ProductExample productExample = new ProductExample();

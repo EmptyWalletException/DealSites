@@ -1,18 +1,14 @@
 package com.kingguanzhang.dealsites.pojo;
 
 
-
-
-import io.searchbox.annotations.JestId;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.elasticsearch.annotations.Document;
 
+import java.io.Serializable;
 import java.util.Date;
 
-@Document(indexName = "ds",type = "d")
-public class Product {
 
-    //@JestId
+public class Product implements Serializable  {
+    private static final long serialVersionUID = 1332643889208978231L;
     @Id
     private Integer productId;
 

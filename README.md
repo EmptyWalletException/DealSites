@@ -1,4 +1,7 @@
 使用springBoot搭建的交易平台,将上次做的SSM框架的交易平台项目改造成springBoot框架,并且整合更多的组件;
+2018/6/18
+
+1:在linux下使用docker安装好了redis 并且在项目test类下成功向Linux虚拟机的redis里写入了数据;
 
 2018/6/17
 

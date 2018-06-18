@@ -9,6 +9,7 @@ import com.kingguanzhang.dealsites.pojo.Product;
 import com.kingguanzhang.dealsites.service.FavoriteProductService;
 import com.kingguanzhang.dealsites.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -82,6 +83,8 @@ public class CommonProductController {
      * @param
      * @return
      */
+
+
     @RequestMapping(value = "/ajax/product/allOnSales",method = RequestMethod.POST)
     @ResponseBody
     public Msg getAllOnSalesProductList(@RequestParam(value = "pn",defaultValue = "1")Integer pn, HttpServletRequest request) {

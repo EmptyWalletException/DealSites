@@ -4,6 +4,7 @@ import com.kingguanzhang.dealsites.pojo.LocalAuth;
 import com.kingguanzhang.dealsites.pojo.PersonInfo;
 import com.kingguanzhang.dealsites.service.LocalAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,7 @@ public class IndexController {
      * @param request
      * @return
      */
+
     @RequestMapping("/index")
     public String showIndex(HttpServletRequest request){
         //使用security在session中取出用户信息;
