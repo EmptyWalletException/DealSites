@@ -1,8 +1,13 @@
 package com.kingguanzhang.dealsites.pojo;
 
+import org.springframework.data.annotation.Id;
+
+import java.io.Serializable;
 import java.util.Date;
 
-public class PersonInfo {
+public class PersonInfo implements Serializable {
+    private static final long serialVersionUID = 1332643889201978232L;
+    @Id
     private Integer userId;
 
     private String name;

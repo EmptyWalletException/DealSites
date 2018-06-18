@@ -1,6 +1,12 @@
 package com.kingguanzhang.dealsites.pojo;
 
-public class Cart {
+import org.springframework.data.annotation.Id;
+
+import java.io.Serializable;
+
+public class Cart implements Serializable {
+    private static final long serialVersionUID = 1332643889208978236L;
+    @Id
     private Integer cartId;
 
     private Integer personInfoId;

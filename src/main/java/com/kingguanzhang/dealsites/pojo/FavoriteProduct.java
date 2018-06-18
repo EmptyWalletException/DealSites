@@ -1,6 +1,12 @@
 package com.kingguanzhang.dealsites.pojo;
 
-public class FavoriteProduct {
+import org.springframework.data.annotation.Id;
+
+import java.io.Serializable;
+
+public class FavoriteProduct implements Serializable {
+    private static final long serialVersionUID = 1332643889208978235L;
+    @Id
     private Integer favoriteProductId;
 
     private Integer productId;

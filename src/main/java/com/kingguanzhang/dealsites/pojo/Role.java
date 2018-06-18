@@ -1,6 +1,12 @@
 package com.kingguanzhang.dealsites.pojo;
 
-public class Role {
+import org.springframework.data.annotation.Id;
+
+import java.io.Serializable;
+
+public class Role implements Serializable {
+    private static final long serialVersionUID = 1332643889208178232L;
+    @Id
     private Integer roleId;
 
     private String roleName;

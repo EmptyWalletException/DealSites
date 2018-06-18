@@ -10,6 +10,7 @@ import com.kingguanzhang.dealsites.util.ImgUtil;
 import com.kingguanzhang.dealsites.util.PathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,7 @@ public class ProductServiceImpl implements ProductService {
      * @param shopId
      * @return
      */
+    @Cacheable(value = "Product",key = "getMethodName()+'['+#a0+']'")
     @Override
     public List<Product> getProductList(Integer shopId) {
         if (null == shopId){
@@ -47,6 +49,7 @@ public class ProductServiceImpl implements ProductService {
      * @param productId
      * @return
      */
+    @Cacheable(value = "Product",key = "getMethodName()+'['+#a0+']'")
     @Override
     public Product getProduct(Integer productId) {
         if (null == productId){
@@ -62,6 +65,8 @@ public class ProductServiceImpl implements ProductService {
      * @param productImgInputStream
      * @param originalFilename
      */
+    @CachePut(value = "Product",key = "'getProduct'+'['+#a0+']'")
+    @CacheEvict(value = "Product",key="'getProductList'+'['+#product.shopId+']'" )
     @Override
     public void addProduct(Product product, InputStream productImgInputStream, String originalFilename) {
         if (null == product){
@@ -105,6 +110,7 @@ public class ProductServiceImpl implements ProductService {
      * @param inputStream
      * @param originalFilename
      */
+    @CacheEvict(value = "Product",key = "{'getProduct'+'['+#a1+']','getProductList'+'['+#product.shopId+']'}")
     @Override
     public Msg updateProductWithImg(Product product, InputStream inputStream, String originalFilename) {
         if (null == product){
@@ -144,6 +150,7 @@ public class ProductServiceImpl implements ProductService {
      * 获取分类下所有商品;
      * @return
      */
+    @Cacheable(value = "Product",key = "getMethodName()+'['+#a0+','+#a1+']'")
     @Override
     public List<Product> getOnSellProductListByCategoryIdAndShopId(Integer categoryId,Integer shopId) {
         if (null == categoryId || null == shopId ){
@@ -162,6 +169,7 @@ public class ProductServiceImpl implements ProductService {
      * 获取所有店铺某个分类下所有商品;
      * @return
      */
+    @Cacheable(value = "Product",key = "getMethodName()+'['+#a0+']'")
     @Override
     public List<Product> getOnSellProductListByCategoryId(Integer categoryId) {
         if (null == categoryId  ){
@@ -179,7 +187,7 @@ public class ProductServiceImpl implements ProductService {
      * 获取所有店铺的所有在售商品;最按后编辑时间倒序;
      * @return
      */
-    @Cacheable(value = "pro",key = "list")
+    @Cacheable(value = "Product",key = "getMethodName()")
     @Override
     public List<Product> getAllOnSellProductList() {
         ProductExample productExample = new ProductExample();
@@ -195,6 +203,7 @@ public class ProductServiceImpl implements ProductService {
      * @param product
      * @return
      */
+    @CacheEvict(value = "Product",key = "{'getProduct'+'['+#a1+']','getProductList'+'['+#product.shopId+']'}")
     @Override
     public int updateProduct(Product product) {
         if (null == product  ){
@@ -216,6 +225,7 @@ public class ProductServiceImpl implements ProductService {
      * @param productId
      * @return
      */
+    @CacheEvict(value = "Product",allEntries = true)
     @Override
     public Integer removeProduct(Integer productId) {
         if (null == productId  ){
@@ -235,6 +245,7 @@ public class ProductServiceImpl implements ProductService {
      * @param productId
      * @return
      */
+    @CacheEvict(value = "Product",allEntries = true)
     @Override
     public Integer shelveProduct(Integer productId) {
         if (null == productId  ){
@@ -257,6 +268,7 @@ public class ProductServiceImpl implements ProductService {
      * @param productId
      * @return
      */
+    @CacheEvict(value = "Product",allEntries = true)
     @Override
     public Integer unShelveProduct(Integer productId) {
         if (null == productId  ){
@@ -279,6 +291,7 @@ public class ProductServiceImpl implements ProductService {
      * @param shopId
      * @return
      */
+    @Cacheable(value = "Product",key = "getMethodName()+'['+#a0+']'")
     @Override
     public List<Product> getShelveProductList(Integer shopId) {
         if (null == shopId  ){
@@ -297,6 +310,7 @@ public class ProductServiceImpl implements ProductService {
      * @param shopId
      * @return
      */
+    @Cacheable(value = "Product",key = "getMethodName()+'['+#a0+']'")
     @Override
     public List<Product> getUnShelveProduct(Integer shopId) {
         if (null == shopId  ){
@@ -315,6 +329,7 @@ public class ProductServiceImpl implements ProductService {
      * @param productIdList
      * @return
      */
+    @CacheEvict(value = "Product",allEntries = true)
     @Override
     public Integer deleteProducts(List<Integer> productIdList) {
         if (null == productIdList || 0 == productIdList.size() ){
@@ -337,6 +352,7 @@ public class ProductServiceImpl implements ProductService {
      * @param productIdList
      * @return
      */
+    @CacheEvict(value = "Product",allEntries = true)
     @Override
     public Integer putawayProducts(List<Integer> productIdList) {
         if (null == productIdList || 0 == productIdList.size() ){
@@ -361,6 +377,7 @@ public class ProductServiceImpl implements ProductService {
      * @param productIdList
      * @return
      */
+    @CacheEvict(value = "Product",allEntries = true)
     @Override
     public Integer soldoutProducts(List<Integer> productIdList) {
         if (null == productIdList || 0 == productIdList.size() ){
@@ -384,6 +401,7 @@ public class ProductServiceImpl implements ProductService {
      * 查询所有店铺的所有商品
      * @return
      */
+    @Cacheable(value = "Product",key = "getMethodName()")
     @Override
     public List<Product> getAllProductList() {
         List<Product> productList = productMapper.selectByExample(null);
@@ -394,6 +412,7 @@ public class ProductServiceImpl implements ProductService {
      * 查询所有店铺的所有上架中商品
      * @return
      */
+    @Cacheable(value = "Product",key = "getMethodName()")
     @Override
     public List<Product> getAllPutawayProductList() {
         ProductExample productExample = new ProductExample();
@@ -407,6 +426,7 @@ public class ProductServiceImpl implements ProductService {
      * 查询所有店铺的所有下架中商品
      * @return
      */
+    @Cacheable(value = "Product",key = "getMethodName()")
     @Override
     public List<Product> getAllSoldoutProduct() {
         ProductExample productExample = new ProductExample();

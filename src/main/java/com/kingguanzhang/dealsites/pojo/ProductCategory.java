@@ -1,8 +1,13 @@
 package com.kingguanzhang.dealsites.pojo;
 
+import org.springframework.data.annotation.Id;
+
+import java.io.Serializable;
 import java.util.Date;
 
-public class ProductCategory {
+public class ProductCategory implements Serializable {
+    private static final long serialVersionUID = 1312643889208978232L;
+    @Id
     private Integer productCategoryId;
 
     private String productCategoryName;

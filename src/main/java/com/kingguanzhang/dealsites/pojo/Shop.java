@@ -1,8 +1,13 @@
 package com.kingguanzhang.dealsites.pojo;
 
+import org.springframework.data.annotation.Id;
+
+import java.io.Serializable;
 import java.util.Date;
 
-public class Shop {
+public class Shop implements Serializable {
+    private static final long serialVersionUID = 1332643889208978233L;
+    @Id
     private Integer shopId;
 
     private String shopName;

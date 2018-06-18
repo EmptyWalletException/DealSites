@@ -1,6 +1,12 @@
 package com.kingguanzhang.dealsites.pojo;
 
-public class RoleLocalauth {
+import org.springframework.data.annotation.Id;
+
+import java.io.Serializable;
+
+public class RoleLocalauth implements Serializable {
+    private static final long serialVersionUID = 133264388920897812L;
+    @Id
     private Integer roleLocalauthId;
 
     private Integer roleId;

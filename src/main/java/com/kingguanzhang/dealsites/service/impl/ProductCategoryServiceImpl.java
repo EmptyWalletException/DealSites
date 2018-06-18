@@ -7,6 +7,9 @@ import com.kingguanzhang.dealsites.pojo.ProductCategory;
 import com.kingguanzhang.dealsites.pojo.ProductCategoryExample;
 import com.kingguanzhang.dealsites.service.ProductCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,6 +28,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
      * 获取分类列表;
      * @return
      */
+    @Cacheable(value = "Category",key = "'AllCategory'")
     @Override
     public List<ProductCategory> getCategory() {
         //这里需要按照priority排序,这是为了方便在首页的分类列表进行划分;
@@ -39,6 +43,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
      * @param productCategory
      * @return
      */
+    @CacheEvict(value = "Category",key = "'AllCategory'")
     @Override
     public Integer addProductCategroy(ProductCategory productCategory) {
         if (null == productCategory){
@@ -58,6 +63,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
      * @param productCategory
      * @return
      */
+    @CacheEvict(value = "Category",key = "'AllCategory'")
     @Override
     public Integer updateProductCategory(ProductCategory productCategory) {
         if (null == productCategory){
@@ -77,6 +83,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
      * @param id
      * @return
      */
+    @CacheEvict(value = "Category",key = "'AllCategory'")
     @Override
     public Integer deleteProductCategroy(Integer id) {
         if (null == id){

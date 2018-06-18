@@ -3,6 +3,8 @@
 
 1:在linux下使用docker安装好了redis 并且在项目test类下成功向Linux虚拟机的redis里写入了数据;
 
+2:成功整合了redis,并在项目中使用了redis的注解缓存功能,主要配置了商品类的缓存,并且当更新商品状态时清空缓存重新在数据库中查询后再存入缓存;
+
 2018/6/17
 
 1:搭建了Linux环境,利用docker安装好了elasticsearch,同时在项目test里测试了elasticsearch,发现springboot data ES会报错nodes找不到,而jest却能正常存值和取值,试验了许多解决方案仍然不行,正在进一步排除此问题;
